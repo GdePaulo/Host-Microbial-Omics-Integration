@@ -1,0 +1,46 @@
+import pandas as pd
+import re
+
+
+def loadGE():
+    return pd.read_csv('Data/HNSC/tcga_scaled01_rnaseq.tsv', delimiter = "\t", index_col=0)
+
+# Load aakash gene expression data with project
+def loadGEWithClinical():
+    aak_ge_clinical = pd.read_csv('Data/GE(Aakash)_Clinical_Data.tsv', delimiter = "\t", index_col=0)
+    aak_ge_clinical_types = aak_ge_clinical[["acronym"]]
+
+    aak_ge = pd.read_csv('Data/HNSC/tcga_scaled01_rnaseq.tsv', delimiter = "\t", index_col=0)
+
+    aak_ge["patient_id"] = aak_ge.apply(lambda row: row.name[:-3], axis=1)   
+    aak_ge_and_clinical = aak_ge.join(aak_ge_clinical_types, on=["patient_id"], how="inner")
+
+    aak_ge_and_clinical["tumor"] = aak_ge_and_clinical.apply(lambda row: 1 if re.search(r"[0].$",row.name) else 0, axis=1)
+    final = aak_ge_and_clinical.drop(["patient_id"], axis=1).rename(columns={"acronym":"project"})
+    return final
+
+def loadTCMA(tcma_type):
+    all_cancer_tcma = pd.read_csv(f'Data/TCMA/all_cancers_{tcma_type}.csv', index_col=0)
+    all_cancer_tcma["tumor"] = all_cancer_tcma.apply(lambda row: 1 if re.search(r"[0]..$",row.name) else 0, axis=1)
+    return all_cancer_tcma
+
+def loadGEOverlappingTCMA(tcma_type):
+    overlapping = pd.read_csv(f'Data/TCMA/all_cancers_{tcma_type}_ge(aakash).csv', index_col=0)
+    overlapping["tumor"] = overlapping.apply(lambda row: 1 if re.search(r"[0].$",row.name) else 0, axis=1)
+    return overlapping
+
+# Create data set overlapping TCMA data and GE (Aak)
+def createGEOverlappingTCMA(tcma_type):
+    all_cancer_tcma = pd.read_csv(f'Data/TCMA/all_cancers_{tcma_type}.csv', index_col=0)
+    all_cancer_tcma.rename(index= lambda s: s[:-1] if s[-1]=="A"else s, inplace=True)
+
+    ge = loadGE()
+
+    tcma_ge = all_cancer_tcma.join(ge, how="inner")
+    tcma_ge.index.name = "patient"
+    tcma_ge["tumor"] = tcma_ge.apply(lambda row: 1 if re.search(r"[0].$",row.name) else 0, axis=1)
+    tcma_ge.to_csv(f"Data/TCMA/all_cancers_{tcma_type}_ge(aakash).csv")
+
+if __name__ == "__main__":
+
+    createGEOverlappingTCMA("phylum")
