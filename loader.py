@@ -6,9 +6,15 @@ def loadGE():
     return pd.read_csv('Data/Aak_Study/tcga_scaled01_rnaseq.tsv', delimiter = "\t", index_col=0)
 
 # Load aakash gene expression data with project
-def loadGEWithClinical():
+def loadGEWithClinical(includeStage=False):
     aak_ge_clinical = pd.read_csv('Data/Aak_Study/GE(Aakash)_Clinical_Data.tsv', delimiter = "\t", index_col=0)
-    aak_ge_clinical_types = aak_ge_clinical[["acronym"]]
+    
+    clinical_columns = ["acronym"]
+    if includeStage:
+        
+        clinical_columns.append("stage")
+
+    aak_ge_clinical_types = aak_ge_clinical[clinical_columns]
 
     aak_ge = pd.read_csv('Data/Aak_Study/tcga_scaled01_rnaseq.tsv', delimiter = "\t", index_col=0)
 
@@ -27,19 +33,29 @@ def loadGEOverlappingTCMA(tcma_type):
     return overlapping
 
 # Create data set overlapping TCMA data and GE (Aak)
-def createGEOverlappingTCMA(tcma_type):
+def createGEOverlappingTCMA(tcma_type, includeStage=False):
     all_cancer_tcma = pd.read_csv(f'Data/TCMA/all_cancers_{tcma_type}.csv', index_col=0)
     all_cancer_tcma.rename(index= lambda s: s[:-1] if s[-1]=="A"else s, inplace=True)
 
-    ge = loadGE()
+    file = f"Data/Integration/all_cancers_{tcma_type}_ge(aakash)"
+
+    if includeStage:
+        ge = loadGEWithClinical(includeStage=True)
+        ge = ge.drop(["project"], axis=1)
+        file += "_stage"
+    else:
+        ge = loadGE()
+    
+    file += ".csv"
 
     tcma_ge = all_cancer_tcma.join(ge, how="inner")
     tcma_ge.index.name = "patient"
-    tcma_ge.to_csv(f"Data/Integration/all_cancers_{tcma_type}_ge(aakash).csv")
+
+    tcma_ge.to_csv(file)
 
 def attachTumorStatus(pd):
     pd["tumor"] = pd.apply(lambda row: 1 if re.search(r"[0][0-9][a-zA-Z]?$",row.name) else 0, axis=1)
     
 if __name__ == "__main__":
 
-    createGEOverlappingTCMA("phylum")
+    createGEOverlappingTCMA("phylum", includeStage=True)
