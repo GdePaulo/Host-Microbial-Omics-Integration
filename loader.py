@@ -28,8 +28,11 @@ def loadTCMA(tcma_type):
     all_cancer_tcma = pd.read_csv(f'Data/TCMA/all_cancers_{tcma_type}.csv', index_col=0)
     return all_cancer_tcma
 
-def loadGEOverlappingTCMA(tcma_type):
-    overlapping = pd.read_csv(f'Data/Integration/all_cancers_{tcma_type}_ge(aakash).csv', index_col=0)
+def loadGEOverlappingTCMA(tcma_type, includeStage=False):
+    if includeStage:
+        overlapping = pd.read_csv(f'Data/Integration/all_cancers_{tcma_type}_ge(aakash)_stage.csv', index_col=0)
+    else:
+        overlapping = pd.read_csv(f'Data/Integration/all_cancers_{tcma_type}_ge(aakash).csv', index_col=0)
     return overlapping
 
 # Create data set overlapping TCMA data and GE (Aak)
@@ -55,6 +58,11 @@ def createGEOverlappingTCMA(tcma_type, includeStage=False):
 
 def attachTumorStatus(pd):
     pd["tumor"] = pd.apply(lambda row: 1 if re.search(r"[0][0-9][a-zA-Z]?$",row.name) else 0, axis=1)
+
+
+def saveDescriptor(descriptor, file):
+    with open(file, 'w') as f:
+        print(descriptor, file=f) 
     
 if __name__ == "__main__":
 
