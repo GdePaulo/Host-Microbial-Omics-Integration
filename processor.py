@@ -8,9 +8,15 @@ import matplotlib.patches as mpatches
 
 from sklearn.decomposition import PCA
 
-def splitData(d, target):
+def splitData(d, target, project=""):
+
+    if project:
+        d = d[d["project"] == project]
+        d = d.drop(["project"], axis=1)
+
     y = d[target]
     x = d.drop([target], axis=1)
+
     return x, y
 
 def getPCA(x):
