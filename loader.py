@@ -15,7 +15,6 @@ def loadGEWithClinical(includeStage=False):
         clinical_columns.append("stage")
 
     aak_ge_clinical_types = aak_ge_clinical[clinical_columns]
-    print("Types:",aak_ge_clinical_types.dtypes)
     aak_ge = pd.read_csv('Data/Aak_Study/tcga_scaled01_rnaseq.tsv', delimiter = "\t", index_col=0)
 
     # There are duplicates also in portion_id eg different measuring tech
@@ -29,8 +28,6 @@ def loadGEWithClinical(includeStage=False):
     aak_ge_clinical_types.set_index("portion_id", inplace=True)
     # print(aak_ge_clinical_types.columns)
     # aak_ge_clinical_types.drop(["sample_id"], axis=1, inplace=True)
-    print("clityps:", aak_ge_clinical_types.head(4))
-    print("reg:", aak_ge.head(4))
     aak_ge_and_clinical = aak_ge.join(aak_ge_clinical_types, how="left")
 
     final = aak_ge_and_clinical.rename(columns={"acronym":"project"})
