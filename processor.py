@@ -7,6 +7,7 @@ import matplotlib.patches as mpatches
 # Visualize data with PCA, making sure it's standardized
 
 from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
 
 def splitData(d, target, project=""):
 
@@ -25,13 +26,19 @@ def getPCA(x):
     pc_df = pd.DataFrame(data = pcs, columns = ['principal component 1', 'principal component 2'])
     return pc_df
 
+def getTSNE(x):
+    tsne = TSNE(n_components=2)
+    tsnes = tsne.fit_transform(x)
+    tsne_df = pd.DataFrame(data = tsnes, columns = ['tsne component 1', 'tsne component 2'])
+    return tsne_df
+
 def plotScatter(X, Y, titles=[], filename=""):
     fig = plt.figure(figsize = (8,8))
     
     for i in range(0, len(X)):
         ax = fig.add_subplot(3,3,(i+1)) 
-        ax.set_xlabel('PC 1', fontsize = 15)
-        ax.set_ylabel('PC 2', fontsize = 15)
+        ax.set_xlabel(X[i].columns[0], fontsize = 15)
+        ax.set_ylabel(X[i].columns[1], fontsize = 15)
         title = titles[i] if titles else "PCA"
         ax.set_title(title, fontsize = 10)
 
