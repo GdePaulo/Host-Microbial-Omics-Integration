@@ -11,7 +11,6 @@ def loadGEWithClinical(includeStage=False):
     
     clinical_columns = ["acronym", "portion_id"]
     if includeStage:
-        
         clinical_columns.append("stage")
 
     aak_ge_clinical_types = aak_ge_clinical[clinical_columns]

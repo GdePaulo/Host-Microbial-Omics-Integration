@@ -24,6 +24,7 @@ def runCrossValidation(x, y, splits=2):
          
         cur_report = classification_report(y_test, y_predicted, output_dict=True)
         # print("error?")
+        # print(cur_report)
         for metric in ["precision", "recall", "f1-score"]:
             sum_report[metric] = sum_report.get(metric, 0) + cur_report["macro avg"][metric] / splits
         sum_report["support-normal"] = sum_report.get("support-normal", 0) + cur_report["0"]["support"] / splits
