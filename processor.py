@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import re
 import matplotlib
@@ -62,6 +63,10 @@ def plotScatter(X, Y, titles=[], filename=""):
         ax.grid()
     plt.tight_layout()
     if filename:
+        filename += ".png"
+        directory = os.path.dirname(filename)
+        if not os.path.exists(directory):
+             os.makedirs(directory)
         plt.savefig(filename, transparent=False, facecolor="white")
 
     
