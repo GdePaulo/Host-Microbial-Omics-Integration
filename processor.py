@@ -8,6 +8,7 @@ import matplotlib.patches as mpatches
 
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
+from sklearn.feature_selection import SelectKBest, chi2
 
 def splitData(d, target, project=""):
 
@@ -31,6 +32,18 @@ def getTSNE(x):
     tsnes = tsne.fit_transform(x)
     tsne_df = pd.DataFrame(data = tsnes, columns = ['tsne component 1', 'tsne component 2'])
     return tsne_df
+
+
+def selectFeatures(x, y, k=10):
+    selector = SelectKBest(chi2, k=k)
+    selector.fit(x, y)
+
+    # chi2_scores = pd.DataFrame(list(zip(x.columns, selector.scores_, selector.pvalues_)), columns=['ftr', 'score', 'pval'])
+    # chi2_scores
+
+    # kbest = np.asarray(x.columns)[selector.get_support()]
+    best_indices =  selector.get_support()
+    return x.iloc[:, best_indices].copy()
 
 def plotScatter(X, Y, titles=[], filename=""):
     fig = plt.figure(figsize = (8,8))
