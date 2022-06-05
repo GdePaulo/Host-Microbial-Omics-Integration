@@ -65,7 +65,9 @@ def createGEOverlappingTCMA(tcma_type, includeStage=False):
     tcma_ge.to_csv(file)
 
 def attachTumorStatus(pd):
-    pd["tumor"] = pd.apply(lambda row: 1 if re.search(r"[0][0-9][a-zA-Z]?$",row.name) else 0, axis=1)
+    d = pd.copy()
+    d["tumor"] = d.apply(lambda row: 1 if re.search(r"[0][0-9][a-zA-Z]?$",row.name) else 0, axis=1)
+    return d
 
 
 def saveDescriptor(descriptor, file):
