@@ -1,6 +1,6 @@
 import pandas as pd
 import re
-
+import os
 
 def loadGE():
     return pd.read_csv('Data/Aak_Study/tcga_scaled01_rnaseq.tsv', delimiter = "\t", index_col=0)
@@ -69,6 +69,9 @@ def attachTumorStatus(pd):
 
 
 def saveDescriptor(descriptor, file):
+    directory = os.path.dirname(file)
+    if not os.path.exists(directory):
+            os.makedirs(directory)
     with open(file, 'w') as f:
         print(descriptor, file=f) 
     

@@ -36,6 +36,9 @@ def getTSNE(x):
 
 
 def selectFeatures(x, y, k=10):
+    if k == 0:
+        return x.copy()
+
     selector = SelectKBest(chi2, k=k)
     selector.fit(x, y)
 
