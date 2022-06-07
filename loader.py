@@ -69,6 +69,34 @@ def attachTumorStatus(pd):
     d["tumor"] = d.apply(lambda row: 1 if re.search(r"[0][0-9][a-zA-Z]?$",row.name) else 0, axis=1)
     return d
 
+def attachStageStatus(pd):
+    stage_dictionary = {
+        "I":0,
+        "IA":0,
+        "IB":0,
+        "II":1,
+        "IIA":1,
+        "IIB":1,
+        "III":2,
+        "IIIA":2,
+        "IIIB":2,
+        "IIIC":2,
+        "IV":3,
+        "IVA":3,
+        "IVB":3,
+    }
+    def convertStage(stage):
+        st = str(stage)[6:]
+        return stage_dictionary[st]
+
+    d = pd.copy()
+    
+    d["stage"] = d.apply(lambda row: convertStage(row.stage) if row.stage==row.stage else row.stage, axis=1)   
+    d = d.dropna(subset=["stage"])
+    d["stage"] = d["stage"].astype(int)
+    return d
+
+
 
 def saveDescriptor(descriptor, file):
     directory = os.path.dirname(file)

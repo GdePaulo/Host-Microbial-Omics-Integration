@@ -1,10 +1,15 @@
 from sklearn.model_selection import train_test_split, StratifiedKFold
+from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report
 
-def runCrossValidation(x, y, splits=2):
+def runCrossValidation(x, y, splits=2, model="SVC"):
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.33, random_state=42)
-    model = SVC()
+
+    if model == "SVC":
+        model = SVC()
+    elif model == "MLGR":
+        model = LogisticRegression(multi_class='multinomial', max_iter=400)
     # model.fit(x_train, y_train)
 
 
@@ -23,6 +28,7 @@ def runCrossValidation(x, y, splits=2):
         # print(y_test, y_predicted)
          
         cur_report = classification_report(y_test, y_predicted, output_dict=True)
+        print(cur_report)
         # print("error?")
         # print(cur_report)
         for metric in ["precision", "recall", "f1-score"]:

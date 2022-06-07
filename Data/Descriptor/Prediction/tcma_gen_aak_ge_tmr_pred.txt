@@ -1,0 +1,9 @@
+Summary data for: COAD
+precision: 0.46875,recall: 0.5,f1-score: 0.4838112858464385,support-normal: 1.5,support-tumor: 22.5,accuracy: 0.9375
+Summary data for: ESCA
+precision: 0.9758064516129032,recall: 0.7916666666666666,f1-score: 0.8542349726775956,support-normal: 3.5,support-tumor: 29.5,accuracy: 0.9545454545454546
+Summary data for: HNSC
+precision: 0.47827932098765435,recall: 0.5,f1-score: 0.4888938160122551,support-normal: 3.5,support-tumor: 77.0,accuracy: 0.9565586419753087
+Summary data for: STAD
+precision: 0.46311475409836067,recall: 0.5,f1-score: 0.4808416630450529,support-normal: 4.5,support-tumor: 56.5,accuracy: 0.9262295081967213
+

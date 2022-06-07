@@ -1,0 +1,16 @@
+ Cancer: COAD tumor
+1        125
+0         21
+dtype: int64 Cancer: ESCA tumor
+1        60
+0        22
+dtype: int64 Cancer: HNSC tumor
+1        155
+0         22
+dtype: int64 Cancer: READ tumor
+1        45
+0         4
+dtype: int64 Cancer: STAD tumor
+1        127
+0         39
+dtype: int64

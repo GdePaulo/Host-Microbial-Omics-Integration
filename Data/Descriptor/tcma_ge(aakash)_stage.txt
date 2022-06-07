@@ -1,0 +1,47 @@
+ Cancer: COAD stage     
+Stage I       13
+Stage IIA     11
+Stage II       5
+Stage IIIB     5
+Stage IIIC     4
+Stage IV       4
+Stage IVA      3
+Stage III      2
+NaN            1
+dtype: int64 Cancer: ESCA stage     
+Stage IIA     21
+Stage IIB     10
+Stage I        6
+Stage III      6
+Stage IA       5
+Stage IIIA     5
+NaN            5
+Stage IIIB     2
+Stage IIIC     2
+Stage IV       2
+Stage IB       1
+Stage II       1
+dtype: int64 Cancer: HNSC stage    
+Stage IVA    71
+NaN          27
+Stage II     25
+Stage III    25
+Stage I      10
+Stage IVB     3
+dtype: int64 Cancer: READ stage     
+Stage IIA     2
+Stage IIIA    1
+dtype: int64 Cancer: STAD stage     
+Stage IIIA    20
+Stage IV      19
+Stage IB      15
+NaN           15
+Stage II      14
+Stage IIB     13
+Stage IIA     11
+Stage IA       5
+Stage IIIB     5
+Stage IIIC     3
+Stage I        1
+Stage III      1
+dtype: int64
