@@ -1,6 +1,8 @@
 import pandas as pd
 import re
 import os
+from io import StringIO
+import prettytable    
 
 def loadGE():
     return pd.read_csv('Data/Aak_Study/tcga_scaled01_rnaseq.tsv', delimiter = "\t", index_col=0)
@@ -42,6 +44,15 @@ def loadGEOverlappingTCMA(tcma_type, includeStage=False):
     else:
         overlapping = pd.read_csv(f'Data/Integration/all_cancers_{tcma_type}_ge(aakash).csv', index_col=0)
     return overlapping
+
+
+def loadAll(includeStage = False):
+    tcma_genus = loadTCMA("genus")
+    tcma_genus_aak_ge = loadGEOverlappingTCMA("genus")
+    aak_ge = loadGEWithClinical()
+    data = [tcma_genus, aak_ge, tcma_genus_aak_ge]
+    files = ["tcma_gen", "aak_ge", "tcma_gen_aak_ge"]
+    return data, files
 
 # Create data set overlapping TCMA data and GE (Aak)
 def createGEOverlappingTCMA(tcma_type, includeStage=False):
@@ -91,12 +102,21 @@ def attachStageStatus(pd):
 
     d = pd.copy()
     
-    d["stage"] = d.apply(lambda row: convertStage(row.stage) if row.stage==row.stage else row.stage, axis=1)   
+    # d["stage"] = d.apply(lambda row: convertStage(row.stage) if row.stage in stage_dictionary else row.stage, axis=1)   
+    # Deal with other stages
+    d["stage"] = d.apply(lambda row: convertStage(row.stage) if str(row.stage)[6:] in stage_dictionary else float("nan"), axis=1)   
     d = d.dropna(subset=["stage"])
     d["stage"] = d["stage"].astype(int)
     return d
 
-
+def getPrettyTable(pd):
+    output = StringIO()
+    pd = pd.round(3)
+    pd.to_csv(output, index=False)
+    output.seek(0)
+    pt = prettytable.from_csv(output)
+    return pt
+        
 
 def saveDescriptor(descriptor, file):
     directory = os.path.dirname(file)
@@ -106,5 +126,4 @@ def saveDescriptor(descriptor, file):
         print(descriptor, file=f) 
     
 if __name__ == "__main__":
-
-    createGEOverlappingTCMA("phylum", includeStage=True)
+    createGEOverlappingTCMA("genus", includeStage=True)
