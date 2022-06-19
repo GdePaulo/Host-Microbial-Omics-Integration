@@ -11,6 +11,8 @@ from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 from sklearn.feature_selection import SelectKBest, chi2
 
+import math
+
 def splitData(d, target, project=""):
 
     if project:
@@ -25,13 +27,13 @@ def splitData(d, target, project=""):
 def getPCA(x):
     pca = PCA(n_components=2)
     pcs = pca.fit_transform(x)
-    pc_df = pd.DataFrame(data = pcs, columns = ['principal component 1', 'principal component 2'])
+    pc_df = pd.DataFrame(data = pcs, columns = ['PC 1', 'PC 2'])
     return pc_df
 
 def getTSNE(x):
     tsne = TSNE(n_components=2)
     tsnes = tsne.fit_transform(x)
-    tsne_df = pd.DataFrame(data = tsnes, columns = ['tsne component 1', 'tsne component 2'])
+    tsne_df = pd.DataFrame(data = tsnes, columns = ['t-SNE 1', 't-SNE 2'])
     return tsne_df
 
 
@@ -50,10 +52,12 @@ def selectFeatures(x, y, k=10):
     return x.iloc[:, best_indices].copy()
 
 def plotScatter(X, Y, titles=[], filename=""):
-    fig = plt.figure(figsize = (8,8))
+    rows = math.ceil(len(X) / 3)
+
+    fig = plt.figure(figsize = (9,rows*3))
     
     for i in range(0, len(X)):
-        ax = fig.add_subplot(3,3,(i+1)) 
+        ax = fig.add_subplot(rows,3,(i+1)) 
         ax.set_xlabel(X[i].columns[0], fontsize = 15)
         ax.set_ylabel(X[i].columns[1], fontsize = 15)
         title = titles[i] if titles else "PCA"
