@@ -55,6 +55,11 @@ def runExperiments(data, files, target="tumor", ps=[0, 5, 10]):
                     continue
 
                 x, y = pr.splitData(d, target=target, project=c)
+
+                least_class = y.value_counts(ascending=True).iloc[0]
+                if least_class < 2:
+                    print(f"Skipping {files[i]} {c} {p} {len(best_x)} due to {least_class} least class")
+                    continue
                 
                 best_x = pr.selectFeatures(x, y, p)
                 x = best_x
