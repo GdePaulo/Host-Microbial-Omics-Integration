@@ -12,6 +12,7 @@ from sklearn.manifold import TSNE
 from sklearn.feature_selection import SelectKBest, chi2
 
 import math
+import numpy as np
 
 def splitData(d, target, project=""):
 
@@ -25,13 +26,13 @@ def splitData(d, target, project=""):
     return x, y
 
 def getPCA(x):
-    pca = PCA(n_components=2)
+    pca = PCA(n_components=2, random_state=1)
     pcs = pca.fit_transform(x)
     pc_df = pd.DataFrame(data = pcs, columns = ['PC 1', 'PC 2'])
     return pc_df
 
 def getTSNE(x):
-    tsne = TSNE(n_components=2)
+    tsne = TSNE(n_components=2, random_state=1)
     tsnes = tsne.fit_transform(x)
     tsne_df = pd.DataFrame(data = tsnes, columns = ['t-SNE 1', 't-SNE 2'])
     return tsne_df
@@ -51,7 +52,7 @@ def selectFeatures(x, y, k=10):
     best_indices =  selector.get_support()
     return x.iloc[:, best_indices].copy()
 
-def plotScatter(X, Y, titles=[], filename=""):
+def plotScatter(X, Y, titles=[], filename="", diagnostic="tumor"):
     rows = math.ceil(len(X) / 3)
 
     fig = plt.figure(figsize = (9,rows*3))
@@ -63,11 +64,24 @@ def plotScatter(X, Y, titles=[], filename=""):
         title = titles[i] if titles else "PCA"
         ax.set_title(title, fontsize = 10)
 
-        colors = matplotlib.colors.ListedColormap(["g", "r"])
+        if diagnostic == "tumor":
+            cdict = {0: "g", 1: "r"}
+            clabel = {0: "normal", 1: "tumor"}
+        else:
+            cdict = {0: "g", 1: "r", 2:"b", 3: "orange"}
+            clabel = {x: "Stage" + str(x+1) for x in cdict}
+
+        for g in np.unique(Y[i]):
+            ix = np.where(Y[i] == g)
+            x = X[i].iloc[ix].iloc[:, 0].values
+            y = X[i].iloc[ix].iloc[:, 1].values
         
-        scatter = ax.scatter(X[i].iloc[:, 0].values, X[i].iloc[:, 1].values, c=Y[i].values, cmap=colors)
-        ax.legend(handles=scatter.legend_elements()[0], labels=["Normal", "Tumor"])
+            scatter = ax.scatter(x, y, c=cdict[g], label=clabel[g])
+            # ax.legend(handles=scatter.legend_elements()[0], labels=labels)
         ax.grid()
+    # ax.legend(loc="upper left")
+    plt.legend()
+
     plt.tight_layout()
     if filename:
         filename += ".png"

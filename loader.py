@@ -60,6 +60,9 @@ def loadAll(includeStage = False, sameSamples=False):
         tcma_genus = overlapping_tcma_genus[~overlapping_tcma_genus.index.duplicated(keep="last")]
         aak_ge = aak_ge[aak_ge.index.isin(tcma_genus_aak_ge.index.tolist())]
 
+        if includeStage:
+            tcma_genus["stage"] = tcma_genus.apply(lambda row: tcma_genus_aak_ge.loc[row.name]["stage"], axis=1)
+
         # files = [x length+ "_same" for x in files]
 
     data = [tcma_genus, aak_ge, tcma_genus_aak_ge]
