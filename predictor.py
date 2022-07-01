@@ -30,10 +30,10 @@ def runCrossValidation(x, y, splits=2, model="SVC"):
         # print(cur_report, " -- sum: ", sum_report)
         for metric in ["precision", "recall", "f1-score"]:
             sum_report[metric] = sum_report.get(metric, 0) + cur_report["macro avg"][metric] / splits
-        
-        if model != "MLGR":
+        print(f"Real:{y_test.values}\nPred:{y_predicted}\n")
+        if y.nunique() == 2:
             sum_report["pr-auc"] = sum_report.get("pr-auc", 0) +  average_precision_score(y_test, y_predicted) / splits
-        print(f"Real:{y_test.values}\nPred:{y_predicted}\nScore:{average_precision_score(y_test, y_predicted)}")
+            print(f"\nScore:{average_precision_score(y_test, y_predicted)}")
         for k in cur_report.keys():
             if k == "accuracy":
                 break
