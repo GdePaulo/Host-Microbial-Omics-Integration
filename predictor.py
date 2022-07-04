@@ -12,9 +12,9 @@ def runCrossValidation(x, y, splits=2, model="SVC"):
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.33, random_state=42)
 
     if model == "SVC":
-        model = SVC()
+        model = SVC(random_state=0)
     elif model == "MLGR":
-        model = LogisticRegression(multi_class='multinomial', max_iter=400)
+        model = LogisticRegression(multi_class='multinomial', max_iter=400, random_state=0)
 
     skf = StratifiedKFold(n_splits=splits, shuffle=True, random_state=0)
     skf.get_n_splits(x, y)
