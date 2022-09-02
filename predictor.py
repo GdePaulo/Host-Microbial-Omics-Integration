@@ -9,8 +9,6 @@ import processor as pr
 import pandas as pd
 
 def runCrossValidation(x, y, splits=2, model="SVC"):
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.33, random_state=42)
-
     if model == "SVC":
         model = SVC(random_state=0)
     elif model == "MLGR":
@@ -67,13 +65,17 @@ def runExperiments(data, files, target="tumor", ps=[0, 5, 10]):
                 least_class = val_counts.iloc[0]
 
                 if least_class < 2 or len(val_counts) < 2:
-                    print(f"Skipping {files[i]} {c} {p} {len(best_x)} due to {least_class} least class")
+                    print(f"Skipping {files[i]} {c} {p} {len(x)} due to {least_class} least class")
                     continue
                 
-                best_x = pr.selectFeatures(x, y, p)
-                x = best_x
+                x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.8, random_state=42)
+                best_indices = pr.selectFeatures(x_train, y_train, p)
+                # print("best", best_indices)
+                # print("xtest", x_test)
+                x = x_test.iloc[:, best_indices].copy()
+                y = y_test
+                print(f"Running for {files[i]} {c} {p} | found p using: {len(x_train)} tr/ev using: {len(x_test)}")
 
-                print(f"Running for {files[i]} {c} {p} {len(best_x)}")
                 cur_report = runCrossValidation(x, y, model=model)
 
                 cur_report["cancer"] = c

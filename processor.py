@@ -40,7 +40,8 @@ def getTSNE(x):
 
 def selectFeatures(x, y, k=10):
     if k == 0:
-        return x.copy()
+        # return x.copy()
+        return list(range(len(x.columns)))
 
     selector = SelectKBest(chi2, k=k)
     selector.fit(x, y)
@@ -50,7 +51,8 @@ def selectFeatures(x, y, k=10):
 
     # kbest = np.asarray(x.columns)[selector.get_support()]
     best_indices =  selector.get_support()
-    return x.iloc[:, best_indices].copy()
+    return best_indices
+    # return x.iloc[:, best_indices].copy()
 
 def plotScatter(X, Y, titles=[], filename="", diagnostic="tumor"):
     rows = math.ceil(len(X) / 3)
