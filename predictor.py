@@ -3,7 +3,7 @@ from operator import index
 from sklearn.model_selection import train_test_split, StratifiedKFold
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
-from sklearn.metrics import accuracy_score, classification_report, average_precision_score
+from sklearn.metrics import accuracy_score, classification_report, average_precision_score, log_loss
 import loader as load
 import processor as pr
 import pandas as pd
@@ -22,7 +22,9 @@ def runCrossValidation(x, y, splits=2, model="SVC"):
         x_train, x_test = x.iloc[train_index], x.iloc[test_index]
         y_train, y_test = y.iloc[train_index], y.iloc[test_index]
         model.fit(x_train, y_train)
+        
         y_predicted = model.predict(x_test)
+        # y_prob = model.predict_
 
         cur_report = classification_report(y_test, y_predicted, output_dict=True, zero_division=0)
         # print(cur_report, " -- sum: ", sum_report)
@@ -39,7 +41,7 @@ def runCrossValidation(x, y, splits=2, model="SVC"):
 
     return sum_report    
 
-def runExperiments(data, files, target="tumor", ps=[0, 5, 10]):
+def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50]):
     for i, d in enumerate(data):
 
         if target == "tumor":
