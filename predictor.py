@@ -16,7 +16,9 @@ def runCrossValidation(x, y, splits=2, model="SVC"):
 
     skf = StratifiedKFold(n_splits=splits, shuffle=True, random_state=0)
     skf.get_n_splits(x, y)
-    sum_report = {}
+
+    y_tests = []
+    y_predicteds = []
 
     for train_index, test_index in skf.split(x, y):
         x_train, x_test = x.iloc[train_index], x.iloc[test_index]
@@ -26,20 +28,44 @@ def runCrossValidation(x, y, splits=2, model="SVC"):
         y_predicted = model.predict(x_test)
         # y_prob = model.predict_
 
+        y_tests.append(y_test)
+        y_predicteds.append(y_predicted)
+
+    sum_report = generateClassificationReport(y_tests, y_predicted)
+
+    return sum_report    
+
+
+def generateClassificationReport(y_tests, y_predicteds):
+    sum_report = {}
+    total_predictions = len(y_predicteds)
+    
+    for i in range(total_predictions):
+        y_test = y_tests[i]
+        y_predicted = y_predicteds[i]
+
         cur_report = classification_report(y_test, y_predicted, output_dict=True, zero_division=0)
         # print(cur_report, " -- sum: ", sum_report)
         for metric in ["precision", "recall", "f1-score"]:
-            sum_report[metric] = sum_report.get(metric, 0) + cur_report["macro avg"][metric] / splits
+            sum_report[metric] = sum_report.get(metric, 0) + cur_report["macro avg"][metric] / total_predictions
         print(f"Real:{y_test.values}\nPred:{y_predicted}\n")
-        if y.nunique() == 2:
-            sum_report["pr-auc"] = sum_report.get("pr-auc", 0) +  average_precision_score(y_test, y_predicted) / splits
-            print(f"\nScore:{average_precision_score(y_test, y_predicted)}")
+        # if y_predicted.nunique() == 2:
+        #     sum_report["pr-auc"] = sum_report.get("pr-auc", 0) +  average_precision_score(y_test, y_predicted) / total_predictions
+        #     print(f"\nScore:{average_precision_score(y_test, y_predicted)}")
         for k in cur_report.keys():
             if k == "accuracy":
                 break
-            sum_report[f"support-{k}"] = sum_report.get(f"support-{k}", 0) + cur_report[k]["support"] / splits
+            sum_report[f"support-{k}"] = sum_report.get(f"support-{k}", 0) + cur_report[k]["support"] / total_predictions
+    return sum_report
+    
 
-    return sum_report    
+def runRandomSampling(x, y, model):
+    
+    for i in range(10):
+        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.4, stratify=y, random_state=42+i)
+
+        model.fit(x_train, y_train)
+        y_predicted = model.predict(x_test)
 
 def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50]):
     for i, d in enumerate(data):
