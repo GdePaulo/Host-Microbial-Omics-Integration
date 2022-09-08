@@ -8,11 +8,8 @@ import loader as load
 import processor as pr
 import pandas as pd
 
-def runCrossValidation(x, y, splits=2, model="SVC"):
-    if model == "SVC":
-        model = SVC(random_state=0)
-    elif model == "MLGR":
-        model = LogisticRegression(multi_class='multinomial', max_iter=400, random_state=0)
+def runCrossValidation(x, y, model, splits=2):
+    
 
     skf = StratifiedKFold(n_splits=splits, shuffle=True, random_state=0)
     skf.get_n_splits(x, y)
@@ -56,26 +53,38 @@ def generateClassificationReport(y_tests, y_predicteds):
             if k == "accuracy":
                 break
             sum_report[f"support-{k}"] = sum_report.get(f"support-{k}", 0) + cur_report[k]["support"] / total_predictions
+
+    sum_report["iterations"] = total_predictions
+
     return sum_report
     
 
 def runRandomSampling(x, y, model):
     
+    y_tests = []    
+    y_predicteds = []
+
     for i in range(10):
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.4, stratify=y, random_state=42+i)
 
         model.fit(x_train, y_train)
         y_predicted = model.predict(x_test)
 
-def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50]):
+        y_tests.append(y_test)
+        y_predicteds.append(y_predicted)
+
+    sum_report = generateClassificationReport(y_tests, y_predicteds)
+    return sum_report
+
+def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling="CV"):
     for i, d in enumerate(data):
 
         if target == "tumor":
             d = load.attachTumorStatus(d)
-            model = "SVC"
+            model = SVC(random_state=0)
         elif target == "stage":
             d = load.attachStageStatus(d)
-            model = "MLGR"
+            model = LogisticRegression(multi_class='multinomial', max_iter=400, random_state=0)
 
         final_reports = None
         for c in ["COAD", "ESCA", "HNSC", "READ", "STAD"]:   
@@ -96,18 +105,20 @@ def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50]):
                     print(f"Skipping {files[i]} {c} {p} {len(x)} due to {least_class} least class")
                     continue
                 
-                x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.8, random_state=42)
-                best_indices = pr.selectFeatures(x_train, y_train, p)
-                # print("best", best_indices)
-                # print("xtest", x_test)
-                x = x_test.iloc[:, best_indices].copy()
-                y = y_test
-                print(f"Running for {files[i]} {c} {p} | found p using: {len(x_train)} tr/ev using: {len(x_test)}")
+                if sampling == "CV":
+                    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.8, random_state=42)
+                    best_indices = pr.selectFeatures(x_train, y_train, p)
+                    
+                    x = x_test.iloc[:, best_indices].copy()
+                    y = y_test
+                    print(f"Running for {files[i]} {c} {p} | found p using: {len(x_train)} tr/ev using: {len(x_test)}")
 
-                cur_report = runCrossValidation(x, y, model=model)
+                    cur_report = runCrossValidation(x, y, model=model)
+                else:
+                    cur_report = runRandomSampling(x, y, model=model)
+
 
                 cur_report["cancer"] = c
-                cur_report["cv_folds"] = 2
                 cur_report["p"] = p
 
                 # Convert elements to array to avoid issues with lack of index when using scaler values from dictionary
