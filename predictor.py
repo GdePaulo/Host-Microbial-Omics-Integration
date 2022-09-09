@@ -28,7 +28,7 @@ def runCrossValidation(x, y, model, splits=2):
         y_tests.append(y_test)
         y_predicteds.append(y_predicted)
 
-    sum_report = generateClassificationReport(y_tests, y_predicted)
+    sum_report = generateClassificationReport(y_tests, y_predicteds)
 
     return sum_report    
 
@@ -40,7 +40,6 @@ def generateClassificationReport(y_tests, y_predicteds):
     for i in range(total_predictions):
         y_test = y_tests[i]
         y_predicted = y_predicteds[i]
-
         cur_report = classification_report(y_test, y_predicted, output_dict=True, zero_division=0)
         # print(cur_report, " -- sum: ", sum_report)
         for metric in ["precision", "recall", "f1-score"]:
