@@ -133,11 +133,14 @@ def getPrettyTable(pd):
         
 
 def saveDescriptor(descriptor, file):
+    createDirectory(file)
+    with open(file, 'w') as f:
+        print(descriptor, file=f) 
+
+def createDirectory(file):
     directory = os.path.dirname(file)
     if not os.path.exists(directory):
             os.makedirs(directory)
-    with open(file, 'w') as f:
-        print(descriptor, file=f) 
-    
+
 if __name__ == "__main__":
     createGEOverlappingTCMA("genus", includeStage=True)

@@ -75,7 +75,7 @@ def runRandomSampling(x, y, model):
     sum_report = generateClassificationReport(y_tests, y_predicteds)
     return sum_report
 
-def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling="CV"):
+def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling="cv"):
     for i, d in enumerate(data):
 
         if target == "tumor":
@@ -104,7 +104,7 @@ def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling=
                     print(f"Skipping {files[i]} {c} {p} {len(x)} due to {least_class} least class")
                     continue
                 
-                if sampling == "CV":
+                if sampling == "cv":
                     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.8, random_state=42)
                     best_indices = pr.selectFeatures(x_train, y_train, p)
                     
@@ -113,12 +113,13 @@ def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling=
                     print(f"Running for {files[i]} {c} {p} | found p using: {len(x_train)} tr/ev using: {len(x_test)}")
 
                     cur_report = runCrossValidation(x, y, model=model)
-                else:
+                elif sampling=="random_sampling":
                     cur_report = runRandomSampling(x, y, model=model)
 
 
                 cur_report["cancer"] = c
                 cur_report["p"] = p
+                cur_report["sampling"] = sampling
 
                 # Convert elements to array to avoid issues with lack of index when using scaler values from dictionary
                 cur_report = {k : [cur_report[k]] for k in cur_report}
@@ -128,7 +129,10 @@ def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling=
                     final_reports = pd.concat([final_reports, report_d], ignore_index=True)
                 else:
                     final_reports = report_d
-        file_name = fr'Data\Descriptor\Prediction_Tables\{target}\{files[i]}_pred.txt'
-        final_reports.to_csv(fr"Data\Descriptor\Prediction_Tables\{target}\{files[i]}_pred.csv", index=None)
+        base_file_name = fr'Data\Descriptor\Prediction_Tables\{sampling}\{target}\{files[i]}_pred'
+        load.createDirectory(base_file_name)
+        pretty_report_file_name = base_file_name + '.txt'
+        report_file_name = base_file_name + '.csv'
+        final_reports.to_csv(report_file_name, index=None)
         pt = load.getPrettyTable(final_reports)
-        load.saveDescriptor(pt, file_name)
+        load.saveDescriptor(pt, pretty_report_file_name)
