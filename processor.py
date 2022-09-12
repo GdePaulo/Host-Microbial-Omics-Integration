@@ -11,6 +11,9 @@ from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 from sklearn.feature_selection import SelectKBest, chi2
 
+from sklearn.linear_model import LogisticRegression, LinearRegression
+from sklearn.svm import SVC
+
 import math
 import numpy as np
 
@@ -38,19 +41,32 @@ def getTSNE(x):
     return tsne_df
 
 
-def selectFeatures(x, y, k=10):
+def selectFeatures(x, y, k=10, method="chi2"):
     if k == 0:
         # return x.copy()
         return list(range(len(x.columns)))
 
-    selector = SelectKBest(chi2, k=k)
-    selector.fit(x, y)
+    if method == "chi2":
+        selector = SelectKBest(chi2, k=k)
+        selector.fit(x, y)
+
+        best_indices = selector.get_support()
+    elif method == "linreg":
+        model = LinearRegression()
+        model.fit(x, y)
+
+        features_with_coefficients = pd.DataFrame({"feature":x.columns,"coefficients":np.transpose(model.coef_)})
+        features_with_coefficients_abs = features_with_coefficients.copy()
+        features_with_coefficients_abs["coefficients"] = features_with_coefficients_abs.apply(lambda row: abs(row.coefficients), axis=1)
+        
+        sorted_features = features_with_coefficients_abs.sort_values("coefficients", ascending=False)
+        top_features = sorted_features.head(k)["feature"].values
+        best_indices = [x.columns.get_loc(c) for c in x.columns if c in top_features]
 
     # chi2_scores = pd.DataFrame(list(zip(x.columns, selector.scores_, selector.pvalues_)), columns=['ftr', 'score', 'pval'])
     # chi2_scores
 
     # kbest = np.asarray(x.columns)[selector.get_support()]
-    best_indices =  selector.get_support()
     return best_indices
     # return x.iloc[:, best_indices].copy()
 

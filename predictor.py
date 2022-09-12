@@ -54,6 +54,7 @@ def generateClassificationReport(y_tests, y_predicteds):
     sum_report["iterations"] = total_predictions
 
     return sum_report
+
     
 
 def runRandomSampling(x, y, model):
@@ -61,7 +62,7 @@ def runRandomSampling(x, y, model):
     y_tests = []    
     y_predicteds = []
     
-    for i in range(10):
+    for i in range(1):
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.4, stratify=y, random_state=42+i)
 
         model.fit(x_train, y_train)
