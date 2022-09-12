@@ -55,7 +55,7 @@ def generateClassificationReport(y_tests, y_predicteds):
 
     return sum_report
 
-    
+
 
 def runRandomSampling(x, y, model):
     
@@ -74,12 +74,10 @@ def runRandomSampling(x, y, model):
     sum_report = generateClassificationReport(y_tests, y_predicteds)
     return sum_report
 
-def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling="cv"):
-    
+def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling="cv", selection="chi2"):
     
 
     for i, d in enumerate(data):
-
         if target == "tumor":
             d = load.attachTumorStatus(d)
             model = SVC(random_state=0)
@@ -89,16 +87,22 @@ def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling=
             # model = LogisticRegression(multi_class='multinomial', max_iter=400, random_state=0)
             model = LinearRegression()
             model_name = "linreg"
+    
 
         final_reports = None
         for c in ["COAD", "ESCA", "HNSC", "READ", "STAD"]:   
+            
+            x, y = pr.splitData(d, target=target, project=c)
+            
+            if selection == "linreg":
+                linreg_ranked_features = pr.selectFeatures(x, y, max(ps), selection)
+
             for p in ps:
                 if target=="tumor" and files[i] == "tcma_gen_aak_ge" and c == "READ":
                     continue
                 if target=="stage" and files[i] == "tcma_gen_aak_ge" and c == "READ":
                     continue
 
-                x, y = pr.splitData(d, target=target, project=c)
 
                 # Every class must have at least 2 samples
                 # Also, there must be at least two classes for prediction 
@@ -109,23 +113,35 @@ def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling=
                     print(f"Skipping {files[i]} {c} {p} {len(x)} due to {least_class} least class")
                     continue
                 
-                if sampling == "cv":
+                if selection == "chi2":
                     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.8, random_state=42)
-                    best_indices = pr.selectFeatures(x_train, y_train, p)
+                    best_indices = pr.selectFeatures(x_train, y_train, p, selection)
                     
-                    x = x_test.iloc[:, best_indices].copy()
-                    y = y_test
+                    x_selected = x_test.iloc[:, best_indices].copy()
+                    y_selected = y_test
+                elif selection == "linreg":
+
+                    if p == 0:
+                        x_selected = x
+                    else:
+                        best_indices = linreg_ranked_features[:p]
+                        x_selected = x.iloc[:, best_indices].copy()
+                    
+                    y_selected = y
+
+                if sampling == "cv":
                     print(f"Running for {files[i]} {c} {p} | found p using: {len(x_train)} tr/ev using: {len(x_test)}")
 
-                    cur_report = runCrossValidation(x, y, model=model)
+                    cur_report = runCrossValidation(x_selected, y_selected, model=model)
                 elif sampling=="random_sampling":
-                    cur_report = runRandomSampling(x, y, model=model)
+                    cur_report = runRandomSampling(x_selected, y_selected, model=model)
 
 
                 cur_report["cancer"] = c
                 cur_report["p"] = p
                 cur_report["sampling"] = sampling
                 cur_report["model"] = model_name
+                cur_report["selection"] = selection
 
                 # Convert elements to array to avoid issues with lack of index when using scaler values from dictionary
                 cur_report = {k : [cur_report[k]] for k in cur_report}
