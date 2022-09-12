@@ -110,15 +110,25 @@ def attachStageStatus(pd):
         "IVA":3,
         "IVB":3,
     }
-    def convertStage(stage):
-        st = str(stage)[6:]
-        return stage_dictionary[st]
+    def convertStage(row):
+        patient = row.name
+        if re.search(r"[0][0-9][a-zA-Z]?$", patient):
+            stage_string = str(row.stage)[6:]
+
+            if stage_string in stage_dictionary:
+                # Add one to make room for zero stage
+                stage = stage_dictionary[stage_string] + 1
+            else:
+                stage = float("nan")
+        else:
+            stage = 0
+        return stage
 
     d = pd.copy()
     
     # d["stage"] = d.apply(lambda row: convertStage(row.stage) if row.stage in stage_dictionary else row.stage, axis=1)   
     # Deal with other stages
-    d["stage"] = d.apply(lambda row: convertStage(row.stage) if str(row.stage)[6:] in stage_dictionary else float("nan"), axis=1)   
+    d["stage"] = d.apply(lambda row: convertStage(row), axis=1)   
     d = d.dropna(subset=["stage"])
     d["stage"] = d["stage"].astype(int)
     return d

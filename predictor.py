@@ -1,7 +1,7 @@
 import imp
 from operator import index
 from sklearn.model_selection import train_test_split, StratifiedKFold
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report, average_precision_score, log_loss
 import loader as load
@@ -9,8 +9,6 @@ import processor as pr
 import pandas as pd
 
 def runCrossValidation(x, y, model, splits=2):
-    
-
     skf = StratifiedKFold(n_splits=splits, shuffle=True, random_state=0)
     skf.get_n_splits(x, y)
 
@@ -62,7 +60,7 @@ def runRandomSampling(x, y, model):
     
     y_tests = []    
     y_predicteds = []
-
+    
     for i in range(10):
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.4, stratify=y, random_state=42+i)
 
@@ -76,14 +74,20 @@ def runRandomSampling(x, y, model):
     return sum_report
 
 def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling="cv"):
+    
+    
+
     for i, d in enumerate(data):
 
         if target == "tumor":
             d = load.attachTumorStatus(d)
             model = SVC(random_state=0)
+            model_name = "svc"
         elif target == "stage":
             d = load.attachStageStatus(d)
-            model = LogisticRegression(multi_class='multinomial', max_iter=400, random_state=0)
+            # model = LogisticRegression(multi_class='multinomial', max_iter=400, random_state=0)
+            model = LinearRegression()
+            model_name = "linreg"
 
         final_reports = None
         for c in ["COAD", "ESCA", "HNSC", "READ", "STAD"]:   
@@ -120,6 +124,7 @@ def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling=
                 cur_report["cancer"] = c
                 cur_report["p"] = p
                 cur_report["sampling"] = sampling
+                cur_report["model"] = model_name
 
                 # Convert elements to array to avoid issues with lack of index when using scaler values from dictionary
                 cur_report = {k : [cur_report[k]] for k in cur_report}
