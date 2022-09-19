@@ -1,0 +1,24 @@
++-----------+--------+----------+-----------+-----------+-----------+-----------+-----------+------------+--------+----+-----------------+--------+-----------+
+| precision | recall | f1-score | support-0 | support-1 | support-2 | support-3 | support-4 | iterations | cancer | p  |     sampling    | model  | selection |
++-----------+--------+----------+-----------+-----------+-----------+-----------+-----------+------------+--------+----+-----------------+--------+-----------+
+|   0.339   | 0.364  |  0.329   |    1.0    |    5.0    |    6.0    |    5.0    |    2.0    |    100     |  COAD  | 0  | random_sampling | linreg |   linreg  |
+|   0.225   | 0.242  |  0.222   |    1.0    |    5.0    |    6.0    |    5.0    |    2.0    |    100     |  COAD  | 5  | random_sampling | linreg |   linreg  |
+|   0.361   | 0.392  |  0.359   |    1.0    |    5.0    |    6.0    |    5.0    |    2.0    |    100     |  COAD  | 10 | random_sampling | linreg |   linreg  |
+|   0.297   | 0.366  |  0.284   |    1.0    |    5.0    |    6.0    |    5.0    |    2.0    |    100     |  COAD  | 20 | random_sampling | linreg |   linreg  |
+|   0.637   | 0.655  |  0.619   |    1.0    |    5.0    |    6.0    |    5.0    |    2.0    |    100     |  COAD  | 50 | random_sampling | linreg |   linreg  |
+|   0.368   | 0.338  |   0.33   |    3.0    |    3.0    |    12.0   |    6.0    |    1.0    |    100     |  ESCA  | 0  | random_sampling | linreg |   linreg  |
+|    0.19   | 0.268  |   0.21   |    3.0    |    3.0    |    12.0   |    6.0    |    1.0    |    100     |  ESCA  | 5  | random_sampling | linreg |   linreg  |
+|   0.216   | 0.246  |  0.218   |    3.0    |    3.0    |    12.0   |    6.0    |    1.0    |    100     |  ESCA  | 10 | random_sampling | linreg |   linreg  |
+|   0.345   |  0.36  |   0.32   |    3.0    |    3.0    |    12.0   |    6.0    |    1.0    |    100     |  ESCA  | 20 | random_sampling | linreg |   linreg  |
+|   0.399   | 0.429  |  0.385   |    3.0    |    3.0    |    12.0   |    6.0    |    1.0    |    100     |  ESCA  | 50 | random_sampling | linreg |   linreg  |
+|   0.333   | 0.271  |  0.249   |    3.0    |    4.0    |    9.0    |    9.0    |    29.0   |    100     |  HNSC  | 0  | random_sampling | linreg |   linreg  |
+|   0.176   | 0.203  |  0.139   |    3.0    |    4.0    |    9.0    |    9.0    |    29.0   |    100     |  HNSC  | 5  | random_sampling | linreg |   linreg  |
+|    0.23   | 0.243  |  0.207   |    3.0    |    4.0    |    9.0    |    9.0    |    29.0   |    100     |  HNSC  | 10 | random_sampling | linreg |   linreg  |
+|   0.327   | 0.307  |  0.289   |    3.0    |    4.0    |    9.0    |    9.0    |    29.0   |    100     |  HNSC  | 20 | random_sampling | linreg |   linreg  |
+|   0.391   | 0.385  |  0.369   |    3.0    |    4.0    |    9.0    |    9.0    |    29.0   |    100     |  HNSC  | 50 | random_sampling | linreg |   linreg  |
+|   0.401   | 0.312  |  0.318   |    4.0    |    8.0    |    14.0   |    11.0   |    6.0    |    100     |  STAD  | 0  | random_sampling | linreg |   linreg  |
+|   0.212   | 0.239  |  0.211   |    4.0    |    8.0    |    14.0   |    11.0   |    6.0    |    100     |  STAD  | 5  | random_sampling | linreg |   linreg  |
+|   0.256   | 0.236  |  0.222   |    4.0    |    8.0    |    14.0   |    11.0   |    6.0    |    100     |  STAD  | 10 | random_sampling | linreg |   linreg  |
+|   0.395   | 0.343  |  0.341   |    4.0    |    8.0    |    14.0   |    11.0   |    6.0    |    100     |  STAD  | 20 | random_sampling | linreg |   linreg  |
+|   0.384   |  0.42  |  0.382   |    4.0    |    8.0    |    14.0   |    11.0   |    6.0    |    100     |  STAD  | 50 | random_sampling | linreg |   linreg  |
++-----------+--------+----------+-----------+-----------+-----------+-----------+-----------+------------+--------+----+-----------------+--------+-----------+
