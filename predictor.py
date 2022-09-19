@@ -82,7 +82,7 @@ def runRandomSampling(x, y, model, categorical=True):
     y_tests = []    
     y_predicteds = []
     
-    for i in range(100):
+    for i in range(50):
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.4, stratify=y, random_state=42+i)
 
         model.fit(x_train, y_train)
