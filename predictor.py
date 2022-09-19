@@ -1,3 +1,4 @@
+from calendar import month_name
 import imp
 from operator import index
 from sklearn.model_selection import train_test_split, StratifiedKFold
@@ -24,8 +25,7 @@ def runCrossValidation(x, y, model, splits=2, categorical=True):
         y_predicted = model.predict(x_test)
         # print("before rounding", y_predicted)
         if categorical:
-            y_predicted = np.clip(y_predicted, 0, 4)
-            y_predicted = np.rint(y_predicted)
+            y_predicted = convertPredictionToCategorical(y_predicted, y)
         # print("after rounding", y_predicted)
             
         # y_prob = model.predict_
@@ -38,6 +38,17 @@ def runCrossValidation(x, y, model, splits=2, categorical=True):
 
     return sum_report    
 
+
+def convertPredictionToCategorical(prediction, all_predictions):
+    
+    min_bound = min(all_predictions)
+    max_bound = max(all_predictions)
+
+    # Deals with dubious supports in classification report from large predictions
+    clipped_prediction = np.clip(prediction, min_bound, max_bound)
+    # Clipping is necessary otherwise large values won't get rounded, failing classification report
+    rounded_prediction = np.rint(clipped_prediction)
+    return rounded_prediction
 
 def generateClassificationReport(y_tests, y_predicteds):
     sum_report = {}
@@ -71,14 +82,14 @@ def runRandomSampling(x, y, model, categorical=True):
     y_tests = []    
     y_predicteds = []
     
-    for i in range(1):
+    for i in range(100):
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.4, stratify=y, random_state=42+i)
 
         model.fit(x_train, y_train)
         y_predicted = model.predict(x_test)
 
         if categorical:
-            y_predicted = np.rint(y_predicted)
+            y_predicted = convertPredictionToCategorical(y_predicted, y)
 
         y_tests.append(y_test)
         y_predicteds.append(y_predicted)
@@ -102,7 +113,7 @@ def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling=
     
 
         final_reports = None
-        for c in ["COAD", "ESCA", "HNSC", "READ", "STAD"][1:3]:   
+        for c in ["COAD", "ESCA", "HNSC", "READ", "STAD"][:]:   
             
             x, y = pr.splitData(d, target=target, project=c)
             
