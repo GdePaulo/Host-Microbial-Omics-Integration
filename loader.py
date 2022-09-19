@@ -46,26 +46,35 @@ def loadGEOverlappingTCMA(tcma_type, includeStage=False):
     return overlapping
 
 
-def loadAll(includeStage = False, sameSamples=False):
+def loadAll(includeStage = False, sameSamples=False, skipGenes=False):
     tcma_genus = loadTCMA("genus")
     tcma_genus_aak_ge = loadGEOverlappingTCMA("genus", includeStage)
-    aak_ge = loadGEWithClinical(includeStage)
 
-    files = ["tcma_gen", "aak_ge", "tcma_gen_aak_ge"]
+    if not skipGenes:
+        aak_ge = loadGEWithClinical(includeStage)
+
 
     if sameSamples:
         overlapping_tcma_genus = tcma_genus.rename(index= lambda s: s[:-1])
         overlapping_tcma_genus = overlapping_tcma_genus[overlapping_tcma_genus.index.isin(tcma_genus_aak_ge.index.tolist())]
         # Deal with samples having two variants 
         tcma_genus = overlapping_tcma_genus[~overlapping_tcma_genus.index.duplicated(keep="last")]
-        aak_ge = aak_ge[aak_ge.index.isin(tcma_genus_aak_ge.index.tolist())]
+
+        if not skipGenes:
+            aak_ge = aak_ge[aak_ge.index.isin(tcma_genus_aak_ge.index.tolist())]
 
         if includeStage:
             tcma_genus["stage"] = tcma_genus.apply(lambda row: tcma_genus_aak_ge.loc[row.name]["stage"], axis=1)
 
         # files = [x length+ "_same" for x in files]
 
-    data = [tcma_genus, aak_ge, tcma_genus_aak_ge]
+    files = ["tcma_gen", "tcma_gen_aak_ge"]
+    data = [tcma_genus, tcma_genus_aak_ge]
+
+    if not skipGenes:
+        files.insert(1, "aak_ge")
+        data.insert(1, aak_ge)
+    
     return data, files
 
 # Create data set overlapping TCMA data and GE (Aak)

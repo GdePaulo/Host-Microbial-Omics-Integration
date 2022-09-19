@@ -7,8 +7,9 @@ from sklearn.metrics import accuracy_score, classification_report, average_preci
 import loader as load
 import processor as pr
 import pandas as pd
+import numpy as np
 
-def runCrossValidation(x, y, model, splits=2):
+def runCrossValidation(x, y, model, splits=2, categorical=True):
     skf = StratifiedKFold(n_splits=splits, shuffle=True, random_state=0)
     skf.get_n_splits(x, y)
 
@@ -21,11 +22,18 @@ def runCrossValidation(x, y, model, splits=2):
         model.fit(x_train, y_train)
         
         y_predicted = model.predict(x_test)
+        # print("before rounding", y_predicted)
+        if categorical:
+            y_predicted = np.clip(y_predicted, 0, 4)
+            y_predicted = np.rint(y_predicted)
+        # print("after rounding", y_predicted)
+            
         # y_prob = model.predict_
 
         y_tests.append(y_test)
         y_predicteds.append(y_predicted)
 
+    # print("generating for", y_predicteds)
     sum_report = generateClassificationReport(y_tests, y_predicteds)
 
     return sum_report    
@@ -38,11 +46,12 @@ def generateClassificationReport(y_tests, y_predicteds):
     for i in range(total_predictions):
         y_test = y_tests[i]
         y_predicted = y_predicteds[i]
+        # print(y_predicted, y_test)
+        print(f"Real:{y_test.values}\nPred:{y_predicted}\n")
         cur_report = classification_report(y_test, y_predicted, output_dict=True, zero_division=0)
         # print(cur_report, " -- sum: ", sum_report)
         for metric in ["precision", "recall", "f1-score"]:
             sum_report[metric] = sum_report.get(metric, 0) + cur_report["macro avg"][metric] / total_predictions
-        print(f"Real:{y_test.values}\nPred:{y_predicted}\n")
         # if y_predicted.nunique() == 2:
         #     sum_report["pr-auc"] = sum_report.get("pr-auc", 0) +  average_precision_score(y_test, y_predicted) / total_predictions
         #     print(f"\nScore:{average_precision_score(y_test, y_predicted)}")
@@ -57,7 +66,7 @@ def generateClassificationReport(y_tests, y_predicteds):
 
 
 
-def runRandomSampling(x, y, model):
+def runRandomSampling(x, y, model, categorical=True):
     
     y_tests = []    
     y_predicteds = []
@@ -67,6 +76,9 @@ def runRandomSampling(x, y, model):
 
         model.fit(x_train, y_train)
         y_predicted = model.predict(x_test)
+
+        if categorical:
+            y_predicted = np.rint(y_predicted)
 
         y_tests.append(y_test)
         y_predicteds.append(y_predicted)
@@ -90,7 +102,7 @@ def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling=
     
 
         final_reports = None
-        for c in ["COAD", "ESCA", "HNSC", "READ", "STAD"]:   
+        for c in ["COAD", "ESCA", "HNSC", "READ", "STAD"][1:3]:   
             
             x, y = pr.splitData(d, target=target, project=c)
             
@@ -103,6 +115,7 @@ def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling=
                 if target=="stage" and files[i] == "tcma_gen_aak_ge" and c == "READ":
                     continue
 
+                print(f"Running {files[i]} {target} {c} {p} {sampling} {selection}")
 
                 # Every class must have at least 2 samples
                 # Also, there must be at least two classes for prediction 
@@ -119,10 +132,11 @@ def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling=
                     
                     x_selected = x_test.iloc[:, best_indices].copy()
                     y_selected = y_test
+                    print(f"Running for {files[i]} {c} {p} | found p using: {len(x_train)} tr/ev using: {len(x_test)}")
                 elif selection == "linreg":
 
                     if p == 0:
-                        x_selected = x
+                        x_selected = x.copy()
                     else:
                         best_indices = linreg_ranked_features[:p]
                         x_selected = x.iloc[:, best_indices].copy()
@@ -130,8 +144,6 @@ def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling=
                     y_selected = y
 
                 if sampling == "cv":
-                    print(f"Running for {files[i]} {c} {p} | found p using: {len(x_train)} tr/ev using: {len(x_test)}")
-
                     cur_report = runCrossValidation(x_selected, y_selected, model=model)
                 elif sampling=="random_sampling":
                     cur_report = runRandomSampling(x_selected, y_selected, model=model)
@@ -151,7 +163,7 @@ def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling=
                     final_reports = pd.concat([final_reports, report_d], ignore_index=True)
                 else:
                     final_reports = report_d
-        base_file_name = fr'Data\Descriptor\Prediction_Tables\{sampling}\{target}\{files[i]}_pred'
+        base_file_name = fr'Data\Descriptor\Prediction_Tables\{sampling}\{target}\{files[i]}_{selection}_pred'
         load.createDirectory(base_file_name)
         pretty_report_file_name = base_file_name + '.txt'
         report_file_name = base_file_name + '.csv'
