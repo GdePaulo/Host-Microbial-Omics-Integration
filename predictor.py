@@ -40,7 +40,7 @@ def runCrossValidation(x, y, model, splits=2, categorical=True):
 
 
 def convertPredictionToCategorical(prediction, all_predictions):
-    
+    # Hardcode
     min_bound = min(all_predictions)
     max_bound = max(all_predictions)
 
