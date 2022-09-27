@@ -1,5 +1,6 @@
 from calendar import month_name
 import imp
+from importlib.metadata import metadata
 from operator import index
 from sklearn.model_selection import train_test_split, StratifiedKFold
 from sklearn.linear_model import LogisticRegression, LinearRegression
@@ -34,9 +35,9 @@ def runCrossValidation(x, y, model, splits=2, categorical=True):
         y_predicteds.append(y_predicted)
 
     # print("generating for", y_predicteds)
-    sum_report = generateClassificationReport(y_tests, y_predicteds)
+    # sum_report = generateClassificationReport(y_tests, y_predicteds)
 
-    return sum_report    
+    return y_tests, y_predicteds 
 
 
 def convertPredictionToCategorical(prediction, all_predictions):
@@ -75,7 +76,16 @@ def generateClassificationReport(y_tests, y_predicteds):
 
     return sum_report
 
-
+def generatePredictionsDataFrame(y_tests, y_predicteds):
+    predictions = {}
+    all_predicted_labels = [y for x in y_tests for y in x]
+    all_actual_labels = [y for x in y_predicteds for y in x]
+    all_sampling_iterations = [i for i, x in enumerate(y_tests) for y in range(len(x))]
+    predictions["predicted"] = all_predicted_labels
+    predictions["actual"] = all_actual_labels
+    predictions["iteration"] = all_sampling_iterations
+    return predictions
+    # return pd.DataFrame.from_dict(predictions, orient='columns')
 
 def runRandomSampling(x, y, model, categorical=True):
     
@@ -94,8 +104,7 @@ def runRandomSampling(x, y, model, categorical=True):
         y_tests.append(y_test)
         y_predicteds.append(y_predicted)
 
-    sum_report = generateClassificationReport(y_tests, y_predicteds)
-    return sum_report
+    return y_tests, y_predicteds 
 
 def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling="cv", selection="chi2"):
     
@@ -112,7 +121,7 @@ def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling=
             model_name = "linreg"
     
 
-        final_reports = None
+        final_reports = [None, None]
         for c in ["COAD", "ESCA", "HNSC", "READ", "STAD"][:]:   
             
             x, y = pr.splitData(d, target=target, project=c)
@@ -155,29 +164,48 @@ def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling=
                     y_selected = y
 
                 if sampling == "cv":
-                    cur_report = runCrossValidation(x_selected, y_selected, model=model)
+                    y_tests, y_predicteds = runCrossValidation(x_selected, y_selected, model=model)
                 elif sampling=="random_sampling":
-                    cur_report = runRandomSampling(x_selected, y_selected, model=model)
+                    y_tests, y_predicteds = runRandomSampling(x_selected, y_selected, model=model)
+                
+                cur_report = generateClassificationReport(y_tests, y_predicteds)
+                cur_pred_output_report = generatePredictionsDataFrame(y_tests, y_predicteds)
+                
+                metadata = {
+                    "cancer" : c,
+                    "p" : p,
+                    "sampling" : sampling,
+                    "model" : model_name,
+                    "selection" : selection
+                } 
+                for j, report in enumerate([cur_report, cur_pred_output_report]):
+                    
+                    for k, v in metadata.items():
+                        if report == cur_report:
+                            report[k] = v
+                        else:
+                            report[k] = [v for _ in range(len(cur_pred_output_report["predicted"]))]
 
+                    # Convert elements to array to avoid issues with lack of index when using scaler values from dictionary
+                    if report == cur_report:
+                        report = {k : [report[k]] for k in report}
+                    
+                    # print(j, report)
+                    report_d = pd.DataFrame.from_dict(report, orient="columns")
 
-                cur_report["cancer"] = c
-                cur_report["p"] = p
-                cur_report["sampling"] = sampling
-                cur_report["model"] = model_name
-                cur_report["selection"] = selection
-
-                # Convert elements to array to avoid issues with lack of index when using scaler values from dictionary
-                cur_report = {k : [cur_report[k]] for k in cur_report}
-                report_d = pd.DataFrame.from_dict(cur_report, orient="columns")
-
-                if final_reports is not None:
-                    final_reports = pd.concat([final_reports, report_d], ignore_index=True)
-                else:
-                    final_reports = report_d
+                    if final_reports[j] is not None:
+                        final_reports[j] = pd.concat([final_reports[j], report_d], ignore_index=True)
+                    else:
+                        final_reports[j] = report_d
+        prediction_performances, prediction_outputs = final_reports
         base_file_name = fr'Data\Descriptor\Prediction_Tables\{sampling}\{target}\{files[i]}_{selection}_pred'
         load.createDirectory(base_file_name)
         pretty_report_file_name = base_file_name + '.txt'
         report_file_name = base_file_name + '.csv'
-        final_reports.to_csv(report_file_name, index=None)
-        pt = load.getPrettyTable(final_reports)
+        predictions_output_file_name = base_file_name + "output" + ".csv"
+
+        
+        prediction_outputs.to_csv(predictions_output_file_name, index=None)
+        prediction_performances.to_csv(report_file_name, index=None)
+        pt = load.getPrettyTable(prediction_performances)
         load.saveDescriptor(pt, pretty_report_file_name)
