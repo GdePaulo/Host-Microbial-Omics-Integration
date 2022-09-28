@@ -10,6 +10,7 @@ import loader as load
 import processor as pr
 import pandas as pd
 import numpy as np
+import config
 
 def runCrossValidation(x, y, model, splits=2, categorical=True):
     skf = StratifiedKFold(n_splits=splits, shuffle=True, random_state=0)
@@ -92,8 +93,8 @@ def runRandomSampling(x, y, model, categorical=True):
     y_tests = []    
     y_predicteds = []
     
-    for i in range(50):
-        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.4, stratify=y, random_state=42+i)
+    for i in range(config.random_sampling_iterations):
+        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=(1 - config.random_sampling_training_portion), stratify=y, random_state=42+i)
 
         model.fit(x_train, y_train)
         y_predicted = model.predict(x_test)
@@ -106,7 +107,7 @@ def runRandomSampling(x, y, model, categorical=True):
 
     return y_tests, y_predicteds 
 
-def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling="cv", selection="chi2"):
+def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampling="cv", selection="chi2"):
     
 
     for i, d in enumerate(data):

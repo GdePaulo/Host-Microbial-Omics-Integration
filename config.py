@@ -4,5 +4,9 @@ prediction_bounds = {
     "stage" : [0, 4]
 }
 
-sampling = ["cv", "random_sampling"]
+sampling = ["random_sampling"]#["cv", "random_sampling"]
+random_sampling_iterations = 200
+random_sampling_training_portion = 0.8
+
 selection_types = ["linreg", "chi2"]
+feature_amounts = [0, 5, 10, 25, 50, 100, 200]
