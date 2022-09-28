@@ -78,8 +78,8 @@ def generateClassificationReport(y_tests, y_predicteds):
 
 def generatePredictionsDataFrame(y_tests, y_predicteds):
     predictions = {}
-    all_predicted_labels = [y for x in y_tests for y in x]
-    all_actual_labels = [y for x in y_predicteds for y in x]
+    all_predicted_labels = [y for x in y_predicteds for y in x]
+    all_actual_labels = [y for x in y_tests for y in x]
     all_sampling_iterations = [i for i, x in enumerate(y_tests) for y in range(len(x))]
     predictions["predicted"] = all_predicted_labels
     predictions["actual"] = all_actual_labels
@@ -147,7 +147,7 @@ def runExperiments(data, files, target="tumor", ps=[0, 5, 10, 20, 50], sampling=
                     continue
                 
                 if selection == "chi2":
-                    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.8, random_state=42)
+                    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.8, random_state=42, stratify=y)
                     best_indices = pr.selectFeatures(x_train, y_train, p, selection)
                     
                     x_selected = x_test.iloc[:, best_indices].copy()
