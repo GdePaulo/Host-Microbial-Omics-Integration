@@ -5,7 +5,7 @@ prediction_bounds = {
 }
 
 sampling = ["random_sampling"]#["cv", "random_sampling"]
-random_sampling_iterations = 100
+random_sampling_iterations = 10
 random_sampling_training_portion = 0.8
 
 selection_types = ["linreg", "chi2"]
