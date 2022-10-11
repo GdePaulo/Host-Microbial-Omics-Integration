@@ -88,16 +88,20 @@ def generatePredictionsDataFrame(y_tests, y_predicteds):
     return predictions
     # return pd.DataFrame.from_dict(predictions, orient='columns')
 
-def runRandomSampling(x, y, model, categorical=True):
+def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0):
     
     y_tests = []    
     y_predicteds = []
     
     for i in range(config.random_sampling_iterations):
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=(1 - config.random_sampling_training_portion), stratify=y, random_state=42+i)
+        
+        best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection)
+        x_train_selected = x_train.iloc[:, best_indices].copy()  
+        x_test_selected = x_test.iloc[:, best_indices].copy()  
 
-        model.fit(x_train, y_train)
-        y_predicted = model.predict(x_test)
+        model.fit(x_train_selected, y_train)
+        y_predicted = model.predict(x_test_selected)
 
         if categorical:
             y_predicted = convertPredictionToCategorical(y_predicted, y)
@@ -127,8 +131,8 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
             
             x, y = pr.splitData(d, target=target, project=c)
             
-            if selection == "linreg":
-                linreg_ranked_features = pr.selectFeatures(x, y, max(ps), selection)
+            # if selection == "linreg":
+            #     linreg_ranked_features = pr.selectFeatures(x, y, max(ps), selection)
 
             for p in ps:
                 if target=="tumor" and files[i] == "tcma_gen_aak_ge" and c == "READ":
@@ -147,27 +151,27 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
                     print(f"Skipping {files[i]} {c} {p} {len(x)} due to {least_class} least class")
                     continue
                 
-                if selection == "chi2":
-                    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.8, random_state=42, stratify=y)
-                    best_indices = pr.selectFeatures(x_train, y_train, p, selection)
+                # if selection == "chi2":
+                #     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.8, random_state=42, stratify=y)
+                #     best_indices = pr.selectFeatures(x_train, y_train, p, selection)
                     
-                    x_selected = x_test.iloc[:, best_indices].copy()
-                    y_selected = y_test
-                    print(f"Running for {files[i]} {c} {p} | found p using: {len(x_train)} tr/ev using: {len(x_test)}")
-                elif selection == "linreg":
+                #     x_selected = x_test.iloc[:, best_indices].copy()
+                #     y_selected = y_test
+                print(f"Running for {files[i]} {c} {p}")
+                # elif selection == "linreg":
 
-                    if p == 0:
-                        x_selected = x.copy()
-                    else:
-                        best_indices = linreg_ranked_features[:p]
-                        x_selected = x.iloc[:, best_indices].copy()
+                #     if p == 0:
+                #         x_selected = x.copy()
+                #     else:
+                #         best_indices = linreg_ranked_features[:p]
+                #         x_selected = x.iloc[:, best_indices].copy()
                     
-                    y_selected = y
+                #     y_selected = y
 
                 if sampling == "cv":
-                    y_tests, y_predicteds = runCrossValidation(x_selected, y_selected, model=model)
+                    y_tests, y_predicteds = runCrossValidation(x, y, model=model, selection=selection, p=p)
                 elif sampling=="random_sampling":
-                    y_tests, y_predicteds = runRandomSampling(x_selected, y_selected, model=model)
+                    y_tests, y_predicteds = runRandomSampling(x, y, model=model, selection=selection, p=p)
                 
                 cur_report = generateClassificationReport(y_tests, y_predicteds)
                 cur_pred_output_report = generatePredictionsDataFrame(y_tests, y_predicteds)
