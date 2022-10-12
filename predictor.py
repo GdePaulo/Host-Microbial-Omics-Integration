@@ -88,10 +88,20 @@ def generatePredictionsDataFrame(y_tests, y_predicteds):
     return predictions
     # return pd.DataFrame.from_dict(predictions, orient='columns')
 
+    
+def generateSelectedFeaturesDataFrame(selected_features):
+    features = {}
+    all_selected_features = [y for x in selected_features for y in x]
+    all_sampling_iterations = [i for i, x in enumerate(selected_features) for y in range(len(x))]
+    features["features"] = all_selected_features
+    features["iteration"] = all_sampling_iterations
+    return features
+
 def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0):
     
     y_tests = []    
     y_predicteds = []
+    selected_features = []
     
     for i in range(config.random_sampling_iterations):
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=(1 - config.random_sampling_training_portion), stratify=y, random_state=42+i)
@@ -108,8 +118,11 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0):
 
         y_tests.append(y_test)
         y_predicteds.append(y_predicted)
+        if p != 0:
+            selected_feature_names = [x.columns[best_index] for best_index in best_indices]
+            selected_features.append(selected_feature_names)
 
-    return y_tests, y_predicteds 
+    return y_tests, y_predicteds, selected_features 
 
 def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampling="cv", selection="chi2"):
     
@@ -126,7 +139,7 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
             model_name = "linreg"
     
 
-        final_reports = [None, None]
+        final_reports = [None, None, None]
         for c in ["COAD", "ESCA", "HNSC", "READ", "STAD"][:]:   
             
             x, y = pr.splitData(d, target=target, project=c)
@@ -169,12 +182,13 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
                 #     y_selected = y
 
                 if sampling == "cv":
-                    y_tests, y_predicteds = runCrossValidation(x, y, model=model, selection=selection, p=p)
+                    y_tests, y_predicteds, selected_features = runCrossValidation(x, y, model=model, selection=selection, p=p)
                 elif sampling=="random_sampling":
-                    y_tests, y_predicteds = runRandomSampling(x, y, model=model, selection=selection, p=p)
+                    y_tests, y_predicteds, selected_features = runRandomSampling(x, y, model=model, selection=selection, p=p)
                 
                 cur_report = generateClassificationReport(y_tests, y_predicteds)
                 cur_pred_output_report = generatePredictionsDataFrame(y_tests, y_predicteds)
+                cur_pred_features_report = generateSelectedFeaturesDataFrame(selected_features)
                 
                 metadata = {
                     "cancer" : c,
@@ -183,34 +197,45 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
                     "model" : model_name,
                     "selection" : selection
                 } 
-                for j, report in enumerate([cur_report, cur_pred_output_report]):
+                reports_to_save = [cur_report, cur_pred_output_report]
+
+                if p!=0:
+                    reports_to_save.append(cur_pred_features_report)
+
+                for j, report in enumerate(reports_to_save):
                     
                     for k, v in metadata.items():
                         if report == cur_report:
                             report[k] = v
                         else:
-                            report[k] = [v for _ in range(len(cur_pred_output_report["predicted"]))]
+                            # report[k] = [v for _ in range(len(cur_pred_output_report["predicted"]))]
+                            first_column_values = list(report.values())[0]
+                            report[k] = [v for _ in range(len(first_column_values))]
 
                     # Convert elements to array to avoid issues with lack of index when using scaler values from dictionary
                     if report == cur_report:
                         report = {k : [report[k]] for k in report}
                     
                     # print(j, report)
+                    
+                    print(j, report)
                     report_d = pd.DataFrame.from_dict(report, orient="columns")
 
                     if final_reports[j] is not None:
                         final_reports[j] = pd.concat([final_reports[j], report_d], ignore_index=True)
                     else:
                         final_reports[j] = report_d
-        prediction_performances, prediction_outputs = final_reports
+        prediction_performances, prediction_outputs, prediction_features = final_reports
         base_file_name = fr'Data\Descriptor\Prediction_Tables\{sampling}\{target}\{files[i]}_{selection}_pred'
         load.createDirectory(base_file_name)
         pretty_report_file_name = base_file_name + '.txt'
         report_file_name = base_file_name + '.csv'
         predictions_output_file_name = base_file_name + "output" + ".csv"
+        predictions_feature_file_name = base_file_name + "feature" + ".csv"
 
         
         prediction_outputs.to_csv(predictions_output_file_name, index=None)
+        prediction_features.to_csv(predictions_feature_file_name, index=None)
         prediction_performances.to_csv(report_file_name, index=None)
         pt = load.getPrettyTable(prediction_performances)
         load.saveDescriptor(pt, pretty_report_file_name)
