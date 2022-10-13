@@ -77,6 +77,18 @@ def loadAll(includeStage = False, sameSamples=False, skipGenes=False):
     
     return data, files
 
+
+def getFeatures(): 
+    files = ["tcma_gen", "aak_ge"]
+    all_features = []
+    for layer in files:
+        with open(f"Data/Descriptor/Description/{layer}_features.txt", "r") as in_file:
+            raw_features = in_file.read()
+            features = raw_features.split(",")
+            all_features.append(features)
+    
+    return all_features, files
+
 # Create data set overlapping TCMA data and GE (Aak)
 def createGEOverlappingTCMA(tcma_type, includeStage=False):
     all_cancer_tcma = pd.read_csv(f'Data/TCMA/all_cancers_{tcma_type}.csv', index_col=0)
