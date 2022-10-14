@@ -25,10 +25,10 @@ def runCrossValidation(x, y, model, splits=2, categorical=True):
         model.fit(x_train, y_train)
         
         y_predicted = model.predict(x_test)
-        # print("before rounding", y_predicted)
+        print("before rounding", y_predicted)
         if categorical:
             y_predicted = convertPredictionToCategorical(y_predicted, y)
-        # print("after rounding", y_predicted)
+        print("after rounding", y_predicted)
             
         # y_prob = model.predict_
 
@@ -49,7 +49,7 @@ def convertPredictionToCategorical(prediction, all_predictions):
     # Deals with dubious supports in classification report from large predictions
     clipped_prediction = np.clip(prediction, min_bound, max_bound)
     # Clipping is necessary otherwise large values won't get rounded, failing classification report
-    rounded_prediction = np.rint(clipped_prediction)
+    rounded_prediction = np.rint(clipped_prediction).astype(np.int32)
     return rounded_prediction
 
 def generateClassificationReport(y_tests, y_predicteds):
@@ -108,18 +108,18 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
     if preload_features and p==max(config.feature_amounts):
         loaded_features = {}
     
-    print(f"p{p} features:{loaded_features}")
+    # print(f"p{p} features:{loaded_features}")
 
     for i in range(config.random_sampling_iterations):
-        print(f"Random sampling iteration {i}")
+        # print(f"Random sampling iteration {i}")
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=(1 - config.random_sampling_training_portion), stratify=y, random_state=42+i)
         
-        print("Selecting features")
+        # print("Selecting features")
         if preload_features:
             if p==max(config.feature_amounts):
                 best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection)
                 
-                print("Setting best_indices:", best_indices)
+                # print("Setting best_indices:", best_indices)
                 loaded_features[i] = best_indices
             elif p==0:
                 best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection)
@@ -131,13 +131,15 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
         x_train_selected = x_train.iloc[:, best_indices].copy()  
         x_test_selected = x_test.iloc[:, best_indices].copy()  
 
-        print("Fitting model")
+        # print("Fitting model")
         model.fit(x_train_selected, y_train)
-        print("Done fitting model")
+        # print("Done fitting model")
         y_predicted = model.predict(x_test_selected)
 
+        # print("before rounding", y_predicted)
         if categorical:
             y_predicted = convertPredictionToCategorical(y_predicted, y)
+        # print("after rounding", y_predicted)
 
         y_tests.append(y_test)
         y_predicteds.append(y_predicted)
