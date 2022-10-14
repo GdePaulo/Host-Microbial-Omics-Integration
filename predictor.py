@@ -97,20 +97,43 @@ def generateSelectedFeaturesDataFrame(selected_features):
     features["iteration"] = all_sampling_iterations
     return features
 
-def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0):
+loaded_features = {}
+def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, preload_features=True):
     
     y_tests = []    
     y_predicteds = []
     selected_features = []
     
+    global loaded_features
+    if preload_features and p==max(config.feature_amounts):
+        loaded_features = {}
+    
+    print(f"p{p} features:{loaded_features}")
+
     for i in range(config.random_sampling_iterations):
+        print(f"Random sampling iteration {i}")
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=(1 - config.random_sampling_training_portion), stratify=y, random_state=42+i)
         
-        best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection)
+        print("Selecting features")
+        if preload_features:
+            if p==max(config.feature_amounts):
+                best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection)
+                
+                print("Setting best_indices:", best_indices)
+                loaded_features[i] = best_indices
+            elif p==0:
+                best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection)
+            else:
+                best_indices = loaded_features[i][:p]
+        else:
+            best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection)
+
         x_train_selected = x_train.iloc[:, best_indices].copy()  
         x_test_selected = x_test.iloc[:, best_indices].copy()  
 
+        print("Fitting model")
         model.fit(x_train_selected, y_train)
+        print("Done fitting model")
         y_predicted = model.predict(x_test_selected)
 
         if categorical:
@@ -125,8 +148,6 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0):
     return y_tests, y_predicteds, selected_features 
 
 def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampling="cv", selection="chi2"):
-    
-
     for i, d in enumerate(data):
         if target == "tumor":
             d = load.attachTumorStatus(d)
@@ -147,7 +168,7 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
             # if selection == "linreg":
             #     linreg_ranked_features = pr.selectFeatures(x, y, max(ps), selection)
 
-            for p in ps:
+            for p in reversed(ps[:]):
                 if target=="tumor" and files[i] == "tcma_gen_aak_ge" and c == "READ":
                     continue
                 if target=="stage" and files[i] == "tcma_gen_aak_ge" and c == "READ":
@@ -164,30 +185,18 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
                     print(f"Skipping {files[i]} {c} {p} {len(x)} due to {least_class} least class")
                     continue
                 
-                # if selection == "chi2":
-                #     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.8, random_state=42, stratify=y)
-                #     best_indices = pr.selectFeatures(x_train, y_train, p, selection)
-                    
-                #     x_selected = x_test.iloc[:, best_indices].copy()
-                #     y_selected = y_test
-                print(f"Running for {files[i]} {c} {p}")
-                # elif selection == "linreg":
-
-                #     if p == 0:
-                #         x_selected = x.copy()
-                #     else:
-                #         best_indices = linreg_ranked_features[:p]
-                #         x_selected = x.iloc[:, best_indices].copy()
-                    
-                #     y_selected = y
+                # print(f"Running for {files[i]} {c} {p}")
 
                 if sampling == "cv":
                     y_tests, y_predicteds, selected_features = runCrossValidation(x, y, model=model, selection=selection, p=p)
                 elif sampling=="random_sampling":
                     y_tests, y_predicteds, selected_features = runRandomSampling(x, y, model=model, selection=selection, p=p)
                 
+                print("Generating classification report")
                 cur_report = generateClassificationReport(y_tests, y_predicteds)
+                print("Generating predictions dataframe")
                 cur_pred_output_report = generatePredictionsDataFrame(y_tests, y_predicteds)
+                print("Generating selected features dataframe")
                 cur_pred_features_report = generateSelectedFeaturesDataFrame(selected_features)
                 
                 metadata = {
@@ -218,7 +227,7 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
                     
                     # print(j, report)
                     
-                    print(j, report)
+                    # print(j, report)
                     report_d = pd.DataFrame.from_dict(report, orient="columns")
 
                     if final_reports[j] is not None:

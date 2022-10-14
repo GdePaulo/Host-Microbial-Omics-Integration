@@ -51,6 +51,8 @@ def selectFeatures(x, y, k=10, method="chi2"):
         selector.fit(x, y)
 
         best_indices = selector.get_support()
+        # Convert boolean mask to list of indices
+        best_indices = [i for i, selected in enumerate(best_indices) if selected==True]
     elif method == "linreg":
         model = LinearRegression()
         model.fit(x, y)
