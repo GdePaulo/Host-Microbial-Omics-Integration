@@ -48,8 +48,8 @@ def selectFeatures(x, y, k=10, method="chi2"):
 
     if method == "chi2":
         selector = SelectKBest(chi2, k=k)
-        selector.fit(x, y)
-
+        X_kbest = selector.fit(x, y)
+        # print("e", X_kbest)
         best_indices = selector.get_support()
         # Convert boolean mask to list of indices
         best_indices = [i for i, selected in enumerate(best_indices) if selected==True]

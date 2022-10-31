@@ -12,35 +12,6 @@ import pandas as pd
 import numpy as np
 import config
 
-def runCrossValidation(x, y, model, splits=2, categorical=True):
-    skf = StratifiedKFold(n_splits=splits, shuffle=True, random_state=0)
-    skf.get_n_splits(x, y)
-
-    y_tests = []
-    y_predicteds = []
-
-    for train_index, test_index in skf.split(x, y):
-        x_train, x_test = x.iloc[train_index], x.iloc[test_index]
-        y_train, y_test = y.iloc[train_index], y.iloc[test_index]
-        model.fit(x_train, y_train)
-        
-        y_predicted = model.predict(x_test)
-        print("before rounding", y_predicted)
-        if categorical:
-            y_predicted = convertPredictionToCategorical(y_predicted, y)
-        print("after rounding", y_predicted)
-            
-        # y_prob = model.predict_
-
-        y_tests.append(y_test)
-        y_predicteds.append(y_predicted)
-
-    # print("generating for", y_predicteds)
-    # sum_report = generateClassificationReport(y_tests, y_predicteds)
-
-    return y_tests, y_predicteds 
-
-
 def convertPredictionToCategorical(prediction, all_predictions):
     # Hardcode
     min_bound = min(all_predictions)
@@ -59,15 +30,11 @@ def generateClassificationReport(y_tests, y_predicteds):
     for i in range(total_predictions):
         y_test = y_tests[i]
         y_predicted = y_predicteds[i]
-        # print(y_predicted, y_test)
         print(f"Real:{y_test.values}\nPred:{y_predicted}\n")
         cur_report = classification_report(y_test, y_predicted, output_dict=True, zero_division=0)
-        # print(cur_report, " -- sum: ", sum_report)
         for metric in ["precision", "recall", "f1-score"]:
             sum_report[metric] = sum_report.get(metric, 0) + cur_report["macro avg"][metric] / total_predictions
-        # if y_predicted.nunique() == 2:
-        #     sum_report["pr-auc"] = sum_report.get("pr-auc", 0) +  average_precision_score(y_test, y_predicted) / total_predictions
-        #     print(f"\nScore:{average_precision_score(y_test, y_predicted)}")
+        
         for k in cur_report.keys():
             if k == "accuracy":
                 break
@@ -86,8 +53,6 @@ def generatePredictionsDataFrame(y_tests, y_predicteds):
     predictions["actual"] = all_actual_labels
     predictions["iteration"] = all_sampling_iterations
     return predictions
-    # return pd.DataFrame.from_dict(predictions, orient='columns')
-
     
 def generateSelectedFeaturesDataFrame(selected_features):
     features = {}
@@ -108,8 +73,6 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
     if preload_features and p==max(config.feature_amounts):
         loaded_features = {}
     
-    # print(f"p{p} features:{loaded_features}")
-
     for i in range(config.random_sampling_iterations):
         # print(f"Random sampling iteration {i}")
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=(1 - config.random_sampling_training_portion), stratify=y, random_state=42+i)
@@ -133,6 +96,7 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
 
         # print("Fitting model")
         model.fit(x_train_selected, y_train)
+
         # print("Done fitting model")
         y_predicted = model.predict(x_test_selected)
 
@@ -143,6 +107,7 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
 
         y_tests.append(y_test)
         y_predicteds.append(y_predicted)
+        
         if p != 0:
             selected_feature_names = [x.columns[best_index] for best_index in best_indices]
             selected_features.append(selected_feature_names)
@@ -164,13 +129,9 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
 
         final_reports = [None, None, None]
         for c in ["COAD", "ESCA", "HNSC", "READ", "STAD"][:]:   
-            
             x, y = pr.splitData(d, target=target, project=c)
-            
-            # if selection == "linreg":
-            #     linreg_ranked_features = pr.selectFeatures(x, y, max(ps), selection)
 
-            for p in reversed(ps[:]):
+            for p in reversed(ps):
                 if target=="tumor" and files[i] == "tcma_gen_aak_ge" and c == "READ":
                     continue
                 if target=="stage" and files[i] == "tcma_gen_aak_ge" and c == "READ":
@@ -188,11 +149,12 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
                     continue
                 
                 # print(f"Running for {files[i]} {c} {p}")
-
-                if sampling == "cv":
-                    y_tests, y_predicteds, selected_features = runCrossValidation(x, y, model=model, selection=selection, p=p)
+                preload_features = True
+                if selection == "chi2":
+                    # Do not preload because they are not Sorted when using chi2
+                    preload_features = False
                 elif sampling=="random_sampling":
-                    y_tests, y_predicteds, selected_features = runRandomSampling(x, y, model=model, selection=selection, p=p)
+                    y_tests, y_predicteds, selected_features = runRandomSampling(x, y, model=model, selection=selection, p=p, preload_features=preload_features)
                 
                 print("Generating classification report")
                 cur_report = generateClassificationReport(y_tests, y_predicteds)
@@ -219,7 +181,6 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
                         if report == cur_report:
                             report[k] = v
                         else:
-                            # report[k] = [v for _ in range(len(cur_pred_output_report["predicted"]))]
                             first_column_values = list(report.values())[0]
                             report[k] = [v for _ in range(len(first_column_values))]
 
@@ -227,26 +188,25 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
                     if report == cur_report:
                         report = {k : [report[k]] for k in report}
                     
-                    # print(j, report)
-                    
-                    # print(j, report)
                     report_d = pd.DataFrame.from_dict(report, orient="columns")
 
                     if final_reports[j] is not None:
                         final_reports[j] = pd.concat([final_reports[j], report_d], ignore_index=True)
                     else:
                         final_reports[j] = report_d
+
         prediction_performances, prediction_outputs, prediction_features = final_reports
         base_file_name = fr'Data\Descriptor\Prediction_Tables\{sampling}\{target}\{files[i]}_{selection}_pred'
         load.createDirectory(base_file_name)
+
         pretty_report_file_name = base_file_name + '.txt'
         report_file_name = base_file_name + '.csv'
         predictions_output_file_name = base_file_name + "output" + ".csv"
         predictions_feature_file_name = base_file_name + "feature" + ".csv"
 
-        
         prediction_outputs.to_csv(predictions_output_file_name, index=None)
         prediction_features.to_csv(predictions_feature_file_name, index=None)
         prediction_performances.to_csv(report_file_name, index=None)
+
         pt = load.getPrettyTable(prediction_performances)
         load.saveDescriptor(pt, pretty_report_file_name)
