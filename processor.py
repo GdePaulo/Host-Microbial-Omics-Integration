@@ -63,7 +63,7 @@ def selectFeatures(x, y, k=10, method="chi2"):
         
         sorted_features = features_with_coefficients_abs.sort_values("coefficients", ascending=False)
         top_features = sorted_features.head(k)["feature"].values
-        best_indices = [x.columns.get_loc(c) for c in x.columns if c in top_features]
+        best_indices = [x.columns.get_loc(c) for c in top_features]
 
     # chi2_scores = pd.DataFrame(list(zip(x.columns, selector.scores_, selector.pvalues_)), columns=['ftr', 'score', 'pval'])
     # chi2_scores
