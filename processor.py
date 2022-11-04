@@ -11,7 +11,7 @@ from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 from sklearn.feature_selection import SelectKBest, chi2
 
-from sklearn.linear_model import LogisticRegression, LinearRegression
+from sklearn.linear_model import LogisticRegression, LinearRegression, ElasticNet
 from sklearn.svm import SVC
 
 import math
@@ -40,7 +40,7 @@ def getTSNE(x):
     tsne_df = pd.DataFrame(data = tsnes, columns = ['t-SNE 1', 't-SNE 2'])
     return tsne_df
 
-
+# To do: fix chi2 to return list Sorted based on feature importance
 def selectFeatures(x, y, k=10, method="chi2"):
     if k == 0:
         # return x.copy()
@@ -53,8 +53,11 @@ def selectFeatures(x, y, k=10, method="chi2"):
         best_indices = selector.get_support()
         # Convert boolean mask to list of indices
         best_indices = [i for i, selected in enumerate(best_indices) if selected==True]
-    elif method == "linreg":
-        model = LinearRegression()
+    else:
+        if method == "linreg":
+            model = LinearRegression()
+        elif method == "elasticnet":
+            model = ElasticNet(random_state=0)
         model.fit(x, y)
 
         features_with_coefficients = pd.DataFrame({"feature":x.columns,"coefficients":np.transpose(model.coef_)})
