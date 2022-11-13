@@ -1,32 +1,32 @@
 +-----------+--------+----------+-----------+-----------+-----------+-----------+-----------+------------+--------+-----+-----------------+--------+-----------+
 | precision | recall | f1-score | support-0 | support-1 | support-2 | support-3 | support-4 | iterations | cancer |  p  |     sampling    | model  | selection |
 +-----------+--------+----------+-----------+-----------+-----------+-----------+-----------+------------+--------+-----+-----------------+--------+-----------+
-|   0.307   | 0.368  |  0.316   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  | 200 | random_sampling | linreg |   linreg  |
-|   0.296   | 0.351  |  0.306   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  | 100 | random_sampling | linreg |   linreg  |
-|   0.287   | 0.328  |   0.29   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  |  50 | random_sampling | linreg |   linreg  |
-|   0.256   | 0.307  |  0.263   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  |  25 | random_sampling | linreg |   linreg  |
-|   0.256   | 0.286  |  0.255   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  |  10 | random_sampling | linreg |   linreg  |
-|   0.154   | 0.212  |  0.169   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  |  5  | random_sampling | linreg |   linreg  |
+|   0.308   | 0.368  |  0.316   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  | 200 | random_sampling | linreg |   linreg  |
+|    0.28   | 0.329  |  0.287   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  | 100 | random_sampling | linreg |   linreg  |
+|   0.264   | 0.307  |  0.271   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  |  50 | random_sampling | linreg |   linreg  |
+|   0.246   | 0.279  |  0.248   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  |  26 | random_sampling | linreg |   linreg  |
+|    0.17   | 0.223  |  0.181   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  |  10 | random_sampling | linreg |   linreg  |
+|    0.14   | 0.194  |  0.149   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  |  6  | random_sampling | linreg |   linreg  |
 |   0.318   | 0.383  |  0.327   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  |  0  | random_sampling | linreg |   linreg  |
-|   0.433   | 0.418  |  0.407   |    2.0    |    2.0    |    6.0    |    3.0    |           |    200     |  ESCA  | 200 | random_sampling | linreg |   linreg  |
-|   0.389   |  0.37  |  0.364   |    2.0    |    2.0    |    6.0    |    3.0    |    0.0    |    200     |  ESCA  | 100 | random_sampling | linreg |   linreg  |
-|   0.236   | 0.216  |  0.196   |    2.0    |    2.0    |    6.0    |    3.0    |    0.0    |    200     |  ESCA  |  50 | random_sampling | linreg |   linreg  |
-|    0.37   | 0.333  |  0.331   |    2.0    |    2.0    |    6.0    |    3.0    |    0.0    |    200     |  ESCA  |  25 | random_sampling | linreg |   linreg  |
-|    0.23   | 0.264  |  0.232   |    2.0    |    2.0    |    6.0    |    3.0    |    0.0    |    200     |  ESCA  |  10 | random_sampling | linreg |   linreg  |
-|   0.244   | 0.323  |  0.263   |    2.0    |    2.0    |    6.0    |    3.0    |    0.0    |    200     |  ESCA  |  5  | random_sampling | linreg |   linreg  |
+|   0.434   | 0.418  |  0.407   |    2.0    |    2.0    |    6.0    |    3.0    |           |    200     |  ESCA  | 200 | random_sampling | linreg |   linreg  |
+|   0.402   | 0.383  |  0.378   |    2.0    |    2.0    |    6.0    |    3.0    |    0.0    |    200     |  ESCA  | 100 | random_sampling | linreg |   linreg  |
+|   0.244   | 0.233  |  0.213   |    2.0    |    2.0    |    6.0    |    3.0    |    0.0    |    200     |  ESCA  |  50 | random_sampling | linreg |   linreg  |
+|   0.375   | 0.335  |  0.335   |    2.0    |    2.0    |    6.0    |    3.0    |    0.0    |    200     |  ESCA  |  26 | random_sampling | linreg |   linreg  |
+|   0.295   | 0.291  |  0.277   |    2.0    |    2.0    |    6.0    |    3.0    |    0.0    |    200     |  ESCA  |  10 | random_sampling | linreg |   linreg  |
+|   0.252   | 0.286  |  0.256   |    2.0    |    2.0    |    6.0    |    3.0    |    0.0    |    200     |  ESCA  |  6  | random_sampling | linreg |   linreg  |
 |   0.414   | 0.405  |  0.386   |    2.0    |    2.0    |    6.0    |    3.0    |           |    200     |  ESCA  |  0  | random_sampling | linreg |   linreg  |
-|   0.286   | 0.276  |  0.259   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  | 200 | random_sampling | linreg |   linreg  |
-|   0.215   | 0.258  |  0.208   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  | 100 | random_sampling | linreg |   linreg  |
-|   0.269   | 0.282  |  0.262   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  |  50 | random_sampling | linreg |   linreg  |
-|   0.206   | 0.212  |  0.191   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  |  25 | random_sampling | linreg |   linreg  |
-|   0.181   | 0.197  |  0.157   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  |  10 | random_sampling | linreg |   linreg  |
-|    0.15   | 0.199  |   0.11   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  |  5  | random_sampling | linreg |   linreg  |
+|   0.287   | 0.277  |   0.26   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  | 200 | random_sampling | linreg |   linreg  |
+|   0.228   | 0.264  |  0.223   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  | 100 | random_sampling | linreg |   linreg  |
+|   0.275   | 0.275  |  0.257   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  |  50 | random_sampling | linreg |   linreg  |
+|   0.241   | 0.244  |  0.221   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  |  26 | random_sampling | linreg |   linreg  |
+|   0.178   | 0.187  |  0.153   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  |  10 | random_sampling | linreg |   linreg  |
+|   0.172   | 0.187  |  0.134   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  |  6  | random_sampling | linreg |   linreg  |
 |   0.303   | 0.295  |  0.263   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  |  0  | random_sampling | linreg |   linreg  |
-|   0.322   | 0.303  |  0.297   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  | 200 | random_sampling | linreg |   linreg  |
-|   0.274   | 0.293  |  0.267   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  | 100 | random_sampling | linreg |   linreg  |
-|   0.278   | 0.288  |  0.271   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  50 | random_sampling | linreg |   linreg  |
-|   0.272   | 0.262  |  0.253   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  25 | random_sampling | linreg |   linreg  |
-|   0.269   | 0.255  |  0.244   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  10 | random_sampling | linreg |   linreg  |
-|   0.147   |  0.19  |   0.15   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  5  | random_sampling | linreg |   linreg  |
+|   0.323   | 0.303  |  0.297   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  | 200 | random_sampling | linreg |   linreg  |
+|   0.292   | 0.309  |  0.287   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  | 100 | random_sampling | linreg |   linreg  |
+|   0.306   | 0.306  |  0.293   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  50 | random_sampling | linreg |   linreg  |
+|   0.265   | 0.259  |   0.25   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  26 | random_sampling | linreg |   linreg  |
+|   0.208   | 0.213  |  0.196   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  10 | random_sampling | linreg |   linreg  |
+|   0.179   | 0.201  |  0.175   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  6  | random_sampling | linreg |   linreg  |
 |   0.353   | 0.319  |  0.316   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  0  | random_sampling | linreg |   linreg  |
 +-----------+--------+----------+-----------+-----------+-----------+-----------+-----------+------------+--------+-----+-----------------+--------+-----------+
