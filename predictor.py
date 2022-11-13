@@ -161,6 +161,10 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
         if selection == "chi2":
             # Do not preload because they are not Sorted when using chi2
             preload_features = False
+        enforce_modality_parity = modality_selection_parity
+        # Don't enforce modalities if there is only one modality
+        if modality_selection_parity and files[i] != "tcma_gen_aak_ge":
+            enforce_modality_parity = False
 
         final_reports = [None, None, None]
         for c in ["COAD", "ESCA", "HNSC", "READ", "STAD"][:]:   
@@ -185,7 +189,7 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
                 
                 # print(f"Running for {files[i]} {c} {p}")
                 if sampling=="random_sampling":
-                    y_tests, y_predicteds, selected_features = runRandomSampling(x, y, model=model, selection=selection, p=p, preload_features=preload_features, modality_selection_parity=modality_selection_parity)
+                    y_tests, y_predicteds, selected_features = runRandomSampling(x, y, model=model, selection=selection, p=p, preload_features=preload_features, modality_selection_parity=enforce_modality_parity)
                 
                 print("Generating classification report")
                 cur_report = generateClassificationReport(y_tests, y_predicteds)
@@ -227,7 +231,8 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
                         final_reports[j] = report_d
 
         prediction_performances, prediction_outputs, prediction_features = final_reports
-        base_file_name = fr'Data\Descriptor\Prediction_Tables\{sampling}\{target}\{files[i]}_{selection}_pred'
+        parity = "(parity)" if enforce_modality_parity else ""
+        base_file_name = fr'Data\Descriptor\Prediction_Tables\{sampling}\{target}\{files[i]}_{selection}{parity}_pred'
         load.createDirectory(base_file_name)
 
         pretty_report_file_name = base_file_name + '.txt'
