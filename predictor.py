@@ -63,7 +63,7 @@ def generateSelectedFeaturesDataFrame(selected_features):
     return features
 
 loaded_features = {}
-def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, preload_features=True):
+def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, preload_features=True, modality_selection_parity=False):
     
     y_tests = []    
     y_predicteds = []
@@ -73,23 +73,54 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
     if preload_features and p==max(config.feature_amounts):
         loaded_features = {}
     
+    if modality_selection_parity:
+        all_features, _ = load.getFeatures()
+        gen, ge = all_features
+        p_per_modality = round(p/2)
+
     for i in range(config.random_sampling_iterations):
         # print(f"Random sampling iteration {i}")
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=(1 - config.random_sampling_training_portion), stratify=y, random_state=42+i)
         
+
         # print("Selecting features")
-        if preload_features:
-            if p==max(config.feature_amounts):
-                best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection)
+        if modality_selection_parity:
+            if p==max(config.feature_amounts) or not preload_features:
+                x_train_with_genus_features = x_train[gen]
+                x_train_with_ge_features = x_train[ge]
+
+                best_indices_genus = pr.selectFeatures(x=x_train_with_genus_features, y=y_train, k=p_per_modality, method=selection)
+                best_indices_ge = pr.selectFeatures(x=x_train_with_ge_features, y=y_train, k=p_per_modality, method=selection)
+
+                # Do it like this to preserve order
+                best_features_genus = [gen[best_index] for best_index in best_indices_genus]
+                best_features_ge = [ge[best_index] for best_index in best_indices_ge]
+                # best_features_both_modalities = best_features_genus + best_features_ge
+
+                best_indices_genus_original = [x_train.columns.get_loc(f) for f in best_features_genus]
+                best_indices_ge_original = [x_train.columns.get_loc(f) for f in best_features_ge]
+
+                best_indices = best_indices_genus_original + best_indices_ge_original
                 
-                # print("Setting best_indices:", best_indices)
-                loaded_features[i] = best_indices
+                if preload_features:
+                    loaded_features[i] = (best_indices_genus_original, best_indices_ge_original)
             elif p==0:
                 best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection)
             else:
-                best_indices = loaded_features[i][:p]
+                if preload_features:
+                    best_indices_genus, best_indices_ge = loaded_features[i]
+                    best_indices = best_indices_genus[:p_per_modality] + best_indices_ge[:p_per_modality]
         else:
-            best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection)
+            if p==max(config.feature_amounts) or not preload_features:
+                best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection)
+                if preload_features:
+                    loaded_features[i] = best_indices
+            elif p==0:
+                best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection)
+            else:
+                if preload_features:
+                    best_indices = loaded_features[i][:p]
+                
 
         x_train_selected = x_train.iloc[:, best_indices].copy()  
         x_test_selected = x_test.iloc[:, best_indices].copy()  
@@ -114,7 +145,7 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
 
     return y_tests, y_predicteds, selected_features 
 
-def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampling="cv", selection="chi2"):
+def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampling="cv", selection="chi2", modality_selection_parity=False):
     for i, d in enumerate(data):
         if target == "tumor":
             d = load.attachTumorStatus(d)
@@ -126,6 +157,10 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
             model = LinearRegression()
             model_name = "linreg"
     
+        preload_features = True
+        if selection == "chi2":
+            # Do not preload because they are not Sorted when using chi2
+            preload_features = False
 
         final_reports = [None, None, None]
         for c in ["COAD", "ESCA", "HNSC", "READ", "STAD"][:]:   
@@ -149,12 +184,8 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
                     continue
                 
                 # print(f"Running for {files[i]} {c} {p}")
-                preload_features = True
-                if selection == "chi2":
-                    # Do not preload because they are not Sorted when using chi2
-                    preload_features = False
-                elif sampling=="random_sampling":
-                    y_tests, y_predicteds, selected_features = runRandomSampling(x, y, model=model, selection=selection, p=p, preload_features=preload_features)
+                if sampling=="random_sampling":
+                    y_tests, y_predicteds, selected_features = runRandomSampling(x, y, model=model, selection=selection, p=p, preload_features=preload_features, modality_selection_parity=modality_selection_parity)
                 
                 print("Generating classification report")
                 cur_report = generateClassificationReport(y_tests, y_predicteds)
