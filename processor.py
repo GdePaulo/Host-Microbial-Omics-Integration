@@ -76,22 +76,22 @@ def selectFeatures(x, y, k=10, method="chi2"):
     # return x.iloc[:, best_indices].copy()
 
 def plotScatter(X, Y, titles=[], filename="", diagnostic="tumor"):
-    rows = math.ceil(len(X) / 3)
+    rows = math.ceil(len(X) / 2)
 
-    fig = plt.figure(figsize = (9,rows*3))
+    fig = plt.figure(figsize = (9, 9))
     
     for i in range(0, len(X)):
-        ax = fig.add_subplot(rows,3,(i+1)) 
+        ax = fig.add_subplot(rows,2,(i+1)) 
         ax.set_xlabel(X[i].columns[0], fontsize = 15)
         ax.set_ylabel(X[i].columns[1], fontsize = 15)
         title = titles[i] if titles else "PCA"
         ax.set_title(title, fontsize = 10)
 
         if diagnostic == "tumor":
-            cdict = {0: "g", 1: "r"}
+            cdict = {0: "b", 1: "r"}
             clabel = {0: "normal", 1: "tumor"}
         else:
-            cdict = {0: "g", 1: "r", 2:"b", 3: "orange"}
+            cdict = {0: "#D81B60", 1: "#1E88E5", 2:"#FFC107", 3: "#004D40"}
             clabel = {x: "Stage" + str(x+1) for x in cdict}
 
         for g in np.unique(Y[i]):
