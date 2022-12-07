@@ -75,23 +75,25 @@ def selectFeatures(x, y, k=10, method="chi2"):
     return best_indices
     # return x.iloc[:, best_indices].copy()
 
-def plotScatter(X, Y, titles=[], filename="", diagnostic="tumor", cols=3):
+def plotScatter(X, Y, sub_titles=[], filename="", diagnostic="tumor", cols=3, main_title="PLOT"):
     rows = math.ceil(len(X) / cols)
 
     fig = plt.figure(figsize = (cols * 3, rows * 3))
     
     for i in range(0, len(X)):
         ax = fig.add_subplot(rows,cols,(i+1)) 
-        ax.set_xlabel(X[i].columns[0], fontsize = 15)
-        ax.set_ylabel(X[i].columns[1], fontsize = 15)
-        title = titles[i] if titles else "PCA"
-        ax.set_title(title, fontsize = 10)
+
+        if (i == 0):
+            ax.set_xlabel(X[i].columns[0], fontsize = 10)
+            ax.set_ylabel(X[i].columns[1], fontsize = 10)
+        title = sub_titles[i] if sub_titles else "PCA"
+        ax.set_title(title, fontsize = 12)
 
         if diagnostic == "tumor":
             cdict = {0: "b", 1: "r"}
             clabel = {0: "normal", 1: "tumor"}
         else:
-            cdict = {0: "#D81B60", 1: "#1E88E5", 2:"#FFC107", 3: "#004D40"}
+            cdict = {0: "#D81B60", 1: "#1E88E5", 2:"#FFC107", 3: "#004D40", 4: "#FE6100"}
             clabel = {x: "Stage" + str(x+1) for x in cdict}
 
         for g in np.unique(Y[i]):
@@ -103,7 +105,8 @@ def plotScatter(X, Y, titles=[], filename="", diagnostic="tumor", cols=3):
             # ax.legend(handles=scatter.legend_elements()[0], labels=labels)
         ax.grid()
     # ax.legend(loc="upper left")
-    plt.legend()
+    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+    fig.suptitle(main_title, size=15)
 
     plt.tight_layout()
     if filename:
