@@ -75,13 +75,13 @@ def selectFeatures(x, y, k=10, method="chi2"):
     return best_indices
     # return x.iloc[:, best_indices].copy()
 
-def plotScatter(X, Y, titles=[], filename="", diagnostic="tumor"):
-    rows = math.ceil(len(X) / 2)
+def plotScatter(X, Y, titles=[], filename="", diagnostic="tumor", cols=3):
+    rows = math.ceil(len(X) / cols)
 
-    fig = plt.figure(figsize = (9, 9))
+    fig = plt.figure(figsize = (cols * 3, rows * 3))
     
     for i in range(0, len(X)):
-        ax = fig.add_subplot(rows,2,(i+1)) 
+        ax = fig.add_subplot(rows,cols,(i+1)) 
         ax.set_xlabel(X[i].columns[0], fontsize = 15)
         ax.set_ylabel(X[i].columns[1], fontsize = 15)
         title = titles[i] if titles else "PCA"
