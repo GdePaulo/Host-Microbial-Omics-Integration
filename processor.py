@@ -94,7 +94,7 @@ def plotScatter(X, Y, sub_titles=[], filename="", diagnostic="tumor", cols=3, ma
             clabel = {0: "normal", 1: "tumor"}
         else:
             cdict = {0: "#D81B60", 1: "#1E88E5", 2:"#FFC107", 3: "#004D40", 4: "#FE6100"}
-            clabel = {x: "Stage" + str(x+1) for x in cdict}
+            clabel = {x: "Stage " + str(x+1) for x in cdict}
 
         for g in np.unique(Y[i]):
             ix = np.where(Y[i] == g)
