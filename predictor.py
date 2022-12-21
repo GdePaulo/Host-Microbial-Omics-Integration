@@ -44,12 +44,15 @@ def generateClassificationReport(y_tests, y_predicteds):
 
     return sum_report
 
-def generatePredictionsDataFrame(y_tests, y_predicteds):
+def generatePredictionsDataFrame(y_tests, y_predicteds, y_predicteds_raw):
     predictions = {}
     all_predicted_labels = [y for x in y_predicteds for y in x]
+    all_predicted_raw_labels = [y for x in y_predicteds_raw for y in x]
     all_actual_labels = [y for x in y_tests for y in x]
     all_sampling_iterations = [i for i, x in enumerate(y_tests) for y in range(len(x))]
+
     predictions["predicted"] = all_predicted_labels
+    predictions["predicted-raw"] = all_predicted_raw_labels
     predictions["actual"] = all_actual_labels
     predictions["iteration"] = all_sampling_iterations
     return predictions
@@ -132,8 +135,6 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
         y_predicted = model.predict(x_test_selected)
 
         # print("before rounding", y_predicted)
-        if categorical:
-            y_predicted = convertPredictionToCategorical(y_predicted, y)
         # print("after rounding", y_predicted)
 
         y_tests.append(y_test)
@@ -146,6 +147,8 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
     return y_tests, y_predicteds, selected_features 
 
 def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampling="cv", selection="chi2", modality_selection_parity=False):
+    categorical = True
+
     for i, d in enumerate(data):
         if target == "tumor":
             d = load.attachTumorStatus(d)
@@ -191,10 +194,13 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
                 if sampling=="random_sampling":
                     y_tests, y_predicteds, selected_features = runRandomSampling(x, y, model=model, selection=selection, p=p, preload_features=preload_features, modality_selection_parity=enforce_modality_parity)
                 
-                print("Generating classification report")
-                cur_report = generateClassificationReport(y_tests, y_predicteds)
+                if categorical:
+                    y_predicteds_clipped_and_rounded = [convertPredictionToCategorical(y_predicted, y) for y_predicted in y_predicteds]
+                    print("Generating classification report")
+                    cur_report = generateClassificationReport(y_tests, y_predicteds_clipped_and_rounded)
+                
                 print("Generating predictions dataframe")
-                cur_pred_output_report = generatePredictionsDataFrame(y_tests, y_predicteds)
+                cur_pred_output_report = generatePredictionsDataFrame(y_tests, y_predicteds_clipped_and_rounded, y_predicteds)
                 print("Generating selected features dataframe")
                 cur_pred_features_report = generateSelectedFeaturesDataFrame(selected_features)
                 
