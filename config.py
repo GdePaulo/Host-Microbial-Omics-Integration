@@ -13,3 +13,5 @@ selection_types = ["linreg", "chi2", "elasticnet"]
 feature_amounts = [0, 6, 10, 26, 50, 100, 200]
 # feature_amounts = [0, 5, 10, 25, 50, 100, 200]
 modality_parities = ["imparity", "parity"]
+
+model_state_path = "aidata/model_state"
