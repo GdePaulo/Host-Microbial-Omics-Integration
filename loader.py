@@ -45,10 +45,28 @@ def loadGEOverlappingTCMA(tcma_type, includeStage=False):
         overlapping = pd.read_csv(f'Data/Integration/all_cancers_{tcma_type}_ge(aakash).csv', index_col=0)
     return overlapping
 
+def loadGEIntegratedWithTCMA(includeStage=False, minmax=True, hidden_features=10):
+    integration_base_file_path = f"Data/Integration/AE/"
+    integration_file_path = integration_base_file_path
+
+    if includeStage:
+        integration_file_path = integration_base_file_path + "stage/"
+    else:
+        integration_file_path = integration_base_file_path + "tumor/"
+
+    integration_file_path += f"extrnr_{hidden_features}/genus_ge"
+
+    integration_file_path += "_minmax" if minmax else ""
+    integration_file_path += ".csv"
+
+    integration = pd.read_csv(integration_file_path, index_col=0)
+    return integration
+
 
 def loadAll(includeStage = False, sameSamples=False, skipGenes=False):
     tcma_genus = loadTCMA("genus")
     tcma_genus_aak_ge = loadGEOverlappingTCMA("genus", includeStage)
+    tcma_genus_aak_ge_ae = loadGEIntegratedWithTCMA(includeStage, minmax=True, hidden_features=10)
 
     if not skipGenes:
         aak_ge = loadGEWithClinical(includeStage)
@@ -68,14 +86,18 @@ def loadAll(includeStage = False, sameSamples=False, skipGenes=False):
 
         # files = [x length+ "_same" for x in files]
 
-    files = ["tcma_gen", "tcma_gen_aak_ge"]
-    data = [tcma_genus, tcma_genus_aak_ge]
+    files = ["tcma_gen", "tcma_gen_aak_ge", "tcma_gen_aak_ge_ae"]
+    data = [tcma_genus, tcma_genus_aak_ge, tcma_genus_aak_ge_ae]
 
     if not skipGenes:
         files.insert(1, "aak_ge")
         data.insert(1, aak_ge)
     
     return data, files
+
+def getSpecificData(layer_name, datas, files):
+    data_index = files.index(layer_name)
+    return datas[data_index]
 
 
 def getFeatures(): 
