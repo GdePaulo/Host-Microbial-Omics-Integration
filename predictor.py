@@ -65,6 +65,17 @@ def generateSelectedFeaturesDataFrame(selected_features):
     features["iteration"] = all_sampling_iterations
     return features
 
+# used for preloading of feature selection. Ensures the p at which which features are preloaded
+# is not bigger than the total amount of available features for the current modality.
+def isMaximumSelectableP(feature_row, p):
+    max_p = max(config.feature_amounts)
+    total_features = len(feature_row.columns)
+    if total_features < max_p:
+        ps_smaller_than_total_features = [p_candidate for p_candidate in config.feature_amounts if p_candidate < total_features]
+        return p == max(ps_smaller_than_total_features)
+    else:
+        return p == max_p
+
 loaded_features = {}
 def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, preload_features=True, modality_selection_parity=False):
     
@@ -88,7 +99,7 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
 
         # print("Selecting features")
         if modality_selection_parity:
-            if p==max(config.feature_amounts) or not preload_features:
+            if isMaximumSelectableP(x, p) or not preload_features:
                 x_train_with_genus_features = x_train[gen]
                 x_train_with_ge_features = x_train[ge]
 
@@ -114,7 +125,7 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
                     best_indices_genus, best_indices_ge = loaded_features[i]
                     best_indices = best_indices_genus[:p_per_modality] + best_indices_ge[:p_per_modality]
         else:
-            if p==max(config.feature_amounts) or not preload_features:
+            if isMaximumSelectableP(x, p) or not preload_features:
                 best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection)
                 if preload_features:
                     loaded_features[i] = best_indices
@@ -177,6 +188,10 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
                 if target=="tumor" and files[i] == "tcma_gen_aak_ge" and c == "READ":
                     continue
                 if target=="stage" and files[i] == "tcma_gen_aak_ge" and c == "READ":
+                    continue
+                nr_columns = len(x.columns)
+                if nr_columns < p:
+                    print(f"Skipping prediction iteration for {files[i]} as p:{p}>{nr_columns}")
                     continue
 
                 print(f"Running {files[i]} {target} {c} {p} {sampling} {selection}")

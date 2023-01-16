@@ -63,13 +63,14 @@ def loadGEIntegratedWithTCMA(includeStage=False, minmax=True, hidden_features=10
     return integration
 
 
-def loadAll(includeStage = False, sameSamples=False, skipGenes=False):
+def loadAll(includeStage = False, sameSamples=False, skipGenes=False, skipAE=False):
     tcma_genus = loadTCMA("genus")
     tcma_genus_aak_ge = loadGEOverlappingTCMA("genus", includeStage)
-    tcma_genus_aak_ge_ae = loadGEIntegratedWithTCMA(includeStage, minmax=True, hidden_features=10)
 
     if not skipGenes:
         aak_ge = loadGEWithClinical(includeStage)
+    if not skipAE: 
+        tcma_genus_aak_ge_ae = loadGEIntegratedWithTCMA(includeStage, minmax=True, hidden_features=30)
 
 
     if sameSamples:
@@ -86,12 +87,15 @@ def loadAll(includeStage = False, sameSamples=False, skipGenes=False):
 
         # files = [x length+ "_same" for x in files]
 
-    files = ["tcma_gen", "tcma_gen_aak_ge", "tcma_gen_aak_ge_ae"]
-    data = [tcma_genus, tcma_genus_aak_ge, tcma_genus_aak_ge_ae]
+    files = ["tcma_gen", "tcma_gen_aak_ge"]
+    data = [tcma_genus, tcma_genus_aak_ge]
 
     if not skipGenes:
         files.insert(1, "aak_ge")
         data.insert(1, aak_ge)
+    if not skipAE:
+        files.append("tcma_gen_aak_ge_ae")
+        data.append(tcma_genus_aak_ge_ae)
     
     return data, files
 
