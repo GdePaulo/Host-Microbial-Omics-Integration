@@ -17,7 +17,7 @@ modality_parities = ["imparity", "parity"]
 model_state_path = "aidata/model_state"
 
 visualization_packages = {
-    # "all": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge(parity)"],
+    "all": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge(parity)", "tcma_gen_aak_ge_ae"],
     "base": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge'],
     "base&parity": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge(parity)"],
     "base&ae": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge_ae"],
