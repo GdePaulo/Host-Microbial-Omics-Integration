@@ -1,3 +1,5 @@
+import loader as load
+
 prediction_targets = ["tumor", "stage"]
 prediction_bounds = {
     "tumor" : [0, 1],
@@ -29,4 +31,16 @@ modality_file_name_to_name = {
     'tcma_gen_aak_ge': "GE ∩ GENUS",
     'tcma_gen_aak_ge(parity)': "GE ∩ GENUS (parity)",
     'tcma_gen_aak_ge_ae': "GE ∩ GENUS (ae)",
+}
+
+all_features, _ = load.getFeatures()
+tcma_gen_features, aak_ge_features = all_features
+tcma_gen_aak_ge_features = aak_ge_features + tcma_gen_features
+tcma_gen_aak_ge_ae_features = list(range(30))
+
+modality_features = {
+    "aak_ge": aak_ge_features,
+    'tcma_gen': tcma_gen_features,
+    'tcma_gen_aak_ge': tcma_gen_aak_ge_features,
+    'tcma_gen_aak_ge_ae': tcma_gen_aak_ge_ae_features,
 }
