@@ -2,8 +2,8 @@ from calendar import month_name
 import imp
 from importlib.metadata import metadata
 from operator import index
-from sklearn.model_selection import train_test_split, StratifiedKFold
-from sklearn.linear_model import LogisticRegression, LinearRegression
+from sklearn.model_selection import train_test_split, StratifiedKFold, GridSearchCV
+from sklearn.linear_model import LogisticRegression, LinearRegression, ElasticNet
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report, average_precision_score, log_loss
 import loader as load
@@ -76,8 +76,28 @@ def isMaximumSelectableP(feature_row, p):
     else:
         return p == max_p
 
+def getTunedModel(estimator, x_inner, y_inner, random_state=42, scoring="neg_root_mean_squared_error"):
+    model_name = type(estimator).__name__
+    param_grid = config.model_hyperparameter_ranges[model_name]
+
+    inner_cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=random_state)
+
+    grid_search = GridSearchCV(
+        estimator=estimator,
+        param_grid=param_grid,
+        cv=inner_cv,
+        scoring=scoring, #https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
+        refit=True,
+        return_train_score=True,
+        n_jobs=6)
+
+    grid_search.fit(x_inner, y_inner)
+    
+    # Predict on the test set and call accuracy
+    return grid_search
+
 loaded_features = {}
-def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, preload_features=True, modality_selection_parity=False):
+def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, preload_features=True, modality_selection_parity=False, hyperp_tuning=False):
     
     y_tests = []    
     y_predicteds = []
@@ -139,11 +159,17 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
         x_train_selected = x_train.iloc[:, best_indices].copy()  
         x_test_selected = x_test.iloc[:, best_indices].copy()  
 
+        
+        if hyperp_tuning:
+            print("Hyperparameter tuning model")
         # print("Fitting model")
-        model.fit(x_train_selected, y_train)
+            predictor = getTunedModel(model, x_train_selected, y_train)
+        else:
+            model.fit(x_train_selected, y_train)
+            predictor = model
 
         # print("Done fitting model")
-        y_predicted = model.predict(x_test_selected)
+        y_predicted = predictor.predict(x_test_selected)
 
         # print("before rounding", y_predicted)
         # print("after rounding", y_predicted)
@@ -157,11 +183,17 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
 
     return y_tests, y_predicteds, selected_features 
 
-def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampling="cv", selection="chi2", modality_selection_parity=False):
+def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampling="cv", selection="chi2", modality_selection_parity=False, stad_exp=False):
     categorical = True
 
     for i, d in enumerate(data):
-        if target == "tumor":
+
+        if stad_exp:
+            print("Running special STAD-STAGE experiments")
+            d = load.attachStageStatus(d)
+            model = ElasticNet(random_state=0)
+            model_name = "elasticnet"
+        elif target == "tumor":
             d = load.attachTumorStatus(d)
             model = SVC(random_state=0)
             model_name = "svc"
@@ -182,8 +214,11 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
 
         final_reports = [None, None, None]
         for c in ["COAD", "ESCA", "HNSC", "READ", "STAD"][:]:   
-            x, y = pr.splitData(d, target=target, project=c)
+            if stad_exp and (target!="stage" or c!="STAD"):
+                continue
 
+            x, y = pr.splitData(d, target=target, project=c)
+            
             for p in reversed(ps):
                 if target=="tumor" and files[i] == "tcma_gen_aak_ge" and c == "READ":
                     continue
@@ -207,7 +242,7 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
                 
                 # print(f"Running for {files[i]} {c} {p}")
                 if sampling=="random_sampling":
-                    y_tests, y_predicteds, selected_features = runRandomSampling(x, y, model=model, selection=selection, p=p, preload_features=preload_features, modality_selection_parity=enforce_modality_parity)
+                    y_tests, y_predicteds, selected_features = runRandomSampling(x, y, model=model, selection=selection, p=p, preload_features=preload_features, modality_selection_parity=enforce_modality_parity, hyperp_tuning=stad_exp)
                 
                 if categorical:
                     y_predicteds_clipped_and_rounded = [convertPredictionToCategorical(y_predicted, y) for y_predicted in y_predicteds]
@@ -252,8 +287,9 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
                         final_reports[j] = report_d
 
         prediction_performances, prediction_outputs, prediction_features = final_reports
-        parity = "(parity)" if enforce_modality_parity else ""
-        base_file_name = fr'Data\Descriptor\Prediction_Tables\{sampling}\{target}\{files[i]}_{selection}{parity}_pred'
+        parity = "(parity)" if enforce_modality_parity else "" 
+        super = "super/" if stad_exp else "" 
+        base_file_name = fr'Data\Descriptor\Prediction_Tables\{super}{sampling}\{target}\{files[i]}_{selection}{parity}_pred'
         load.createDirectory(base_file_name)
 
         pretty_report_file_name = base_file_name + '.txt'

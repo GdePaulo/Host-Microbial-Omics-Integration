@@ -7,7 +7,7 @@ prediction_bounds = {
 }
 
 sampling = ["random_sampling"]#["cv", "random_sampling"]
-random_sampling_iterations = 200
+random_sampling_iterations = 2#00
 random_sampling_training_portion = 0.8
 
 selection_types = ["linreg", "chi2", "elasticnet"]
@@ -43,4 +43,15 @@ modality_features = {
     'tcma_gen': tcma_gen_features,
     'tcma_gen_aak_ge': tcma_gen_aak_ge_features,
     'tcma_gen_aak_ge_ae': tcma_gen_aak_ge_ae_features,
+}
+
+model_hyperparameter_ranges = {
+    "ElasticNet": {
+        "alpha" : [1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 0.0, 1.0, 10.0, 100.0],
+        "l1_ratio" : [step/10 for step in range(0, 10)]
+     }
+}
+
+model_hyperparameter_scoring = {
+    "stage":"neg_root_mean_squared_error"
 }
