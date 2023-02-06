@@ -14,13 +14,31 @@ if not sys.warnoptions:
     # os.environ["PYTHONWARNINGS"] = ('ignore::UserWarning, ignore::ConvergenceWarning, ignore::RuntimeWarning') # Also affect subprocesses
     os.environ["PYTHONWARNINGS"] = "ignore" # Also affect subprocesses
 
+# STAGE/STAD: 7p * 2sel * 4mod * iterations = 56 * iterations
+# With only linreg and 2 iterations,It takes 2 minutes and 50 seconds with layer parallelization
+# 7 minutes and 12 seconds when specifying -N1
 def main():
+    if len(sys.argv) > 1:
+        chosen_layer = sys.argv[1]
+
     stad_stage_exp = True
     # aak_ge takes a while. chokes during feature selection COAD even with 5
     for target in config.prediction_targets[1:]:
-        data, files = load.loadAll(includeStage=(target=="stage"), sameSamples=True, skipGenes=False)
+
+        if chosen_layer:
+            print("Running for layer", chosen_layer)
+            if chosen_layer != "aak_ge":
+                data, files = load.loadAll(includeStage=(target=="stage"), sameSamples=True, skipGenes=True)
+            else:
+                data, files = load.loadAll(includeStage=(target=="stage"), sameSamples=True, skipGenes=False)
+            specific_data = load.getSpecificData(chosen_layer, data, files)
+            data = [specific_data]
+            files = [chosen_layer]
+        else:
+            data, files = load.loadAll(includeStage=(target=="stage"), sameSamples=True, skipGenes=False)
+
         for sampling in config.sampling[:]:
-            for selection in config.selection_types[:2]:
+            for selection in config.selection_types[:1]:
                 # pred.runExperiments(data[1:2], files[1:2], target=target, sampling=sampling, selection=selection)
                 
                 for parity in config.modality_parities[:1]:

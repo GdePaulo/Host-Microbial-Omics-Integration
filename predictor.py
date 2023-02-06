@@ -90,7 +90,7 @@ def getTunedModel(estimator, x_inner, y_inner, random_state=42, scoring="neg_roo
         scoring=scoring, #https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
         refit=True,
         return_train_score=True,
-        n_jobs=6)
+        n_jobs=-1)
 
     grid_search.fit(x_inner, y_inner)
     

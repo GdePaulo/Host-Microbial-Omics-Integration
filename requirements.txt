@@ -21,3 +21,8 @@ dependencies:
 - tqdm
 - scikit-learn=1.0.2
 - conda-forge::prettytable=3.3.0
+
+#SBATCH --cpus-per-task=6
+Parallelising pipeline
+https://www.biostars.org/p/9526034/#9526109
+https://stackoverflow.com/questions/66919530/how-to-submit-run-multiple-parallel-jobs-with-slurm-sbatch
