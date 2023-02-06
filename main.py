@@ -17,15 +17,14 @@ if not sys.warnoptions:
 # STAGE/STAD: 7p * 2sel * 4mod * iterations = 56 * iterations
 # With only linreg and 2 iterations,It takes 2 minutes and 50 seconds with layer parallelization
 # 7 minutes and 12 seconds when specifying -N1
+# it's not paralyzing possibly because the first run is using all the memory
 def main():
-    if len(sys.argv) > 1:
-        chosen_layer = sys.argv[1]
-
     stad_stage_exp = True
     # aak_ge takes a while. chokes during feature selection COAD even with 5
     for target in config.prediction_targets[1:]:
 
-        if chosen_layer:
+        if len(sys.argv) > 1:
+            chosen_layer = sys.argv[1]
             print("Running for layer", chosen_layer)
             if chosen_layer != "aak_ge":
                 data, files = load.loadAll(includeStage=(target=="stage"), sameSamples=True, skipGenes=True)
@@ -35,6 +34,7 @@ def main():
             data = [specific_data]
             files = [chosen_layer]
         else:
+            print("Running for all layers")
             data, files = load.loadAll(includeStage=(target=="stage"), sameSamples=True, skipGenes=False)
 
         for sampling in config.sampling[:]:
