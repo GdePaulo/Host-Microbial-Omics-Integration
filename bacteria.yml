@@ -1,0 +1,13 @@
+name: bacteria
+
+channels:
+  - conda-forge
+
+dependencies:
+- python=3.9
+- matplotlib
+- numpy=1.21.5
+- pandas=1.4.1
+- tqdm
+- scikit-learn=1.0.2
+- conda-forge::prettytable=3.3.0

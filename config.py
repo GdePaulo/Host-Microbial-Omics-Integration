@@ -45,6 +45,7 @@ modality_features = {
     'tcma_gen_aak_ge_ae': tcma_gen_aak_ge_ae_features,
 }
 
+# Maybe also tune normalize and tol
 model_hyperparameter_ranges = {
     "ElasticNet": {
         "alpha" : [1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 0.0, 1.0, 10.0, 100.0],
