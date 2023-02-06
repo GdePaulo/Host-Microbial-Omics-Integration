@@ -4,6 +4,15 @@ import loader as load
 import predictor as pred
 import config
 import time
+import sys
+import os
+import warnings
+
+# Ignore warnings https://stackoverflow.com/questions/53784971/how-to-disable-convergencewarning-using-sklearn#comment111709503_55595680
+if not sys.warnoptions:
+    warnings.simplefilter("ignore")
+    # os.environ["PYTHONWARNINGS"] = ('ignore::UserWarning, ignore::ConvergenceWarning, ignore::RuntimeWarning') # Also affect subprocesses
+    os.environ["PYTHONWARNINGS"] = "ignore" # Also affect subprocesses
 
 def main():
     stad_stage_exp = True
@@ -26,7 +35,7 @@ def main():
                         pred.runExperiments(data[:], files[:], target=target, sampling=sampling, selection=selection, modality_selection_parity=enforce_modality_parity, stad_exp=stad_stage_exp)
                     
 if __name__ == "__main__":
-    start_time = time.process_time()
+    start_time = time.time()
     main()
-    elapsed_time = time.process_time() - start_time
+    elapsed_time = time.time() - start_time
     print("--- %.2f seconds ---" % elapsed_time)
