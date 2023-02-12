@@ -1,4 +1,5 @@
 import loader as load
+import os
 
 prediction_targets = ["tumor", "stage"]
 prediction_bounds = {
@@ -7,7 +8,7 @@ prediction_bounds = {
 }
 
 sampling = ["random_sampling"]#["cv", "random_sampling"]
-random_sampling_iterations = 200#00
+random_sampling_iterations = 1#00
 random_sampling_training_portion = 0.8
 
 selection_types = ["linreg", "chi2", "elasticnet"]
@@ -56,3 +57,5 @@ model_hyperparameter_ranges = {
 model_hyperparameter_scoring = {
     "stage":"neg_root_mean_squared_error"
 }
+
+PREDICTIONS_DIR = os.path.join("Data","Descriptor","Prediction_Tables")

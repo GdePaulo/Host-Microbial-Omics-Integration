@@ -12,6 +12,7 @@ import processor as pr
 import pandas as pd
 import numpy as np
 import config
+import os
 
 def convertPredictionToCategorical(prediction, all_predictions):
     # Hardcode
@@ -289,8 +290,8 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
 
         prediction_performances, prediction_outputs, prediction_features = final_reports
         parity = "(parity)" if enforce_modality_parity else "" 
-        super = "super/" if stad_exp else "" 
-        base_file_name = fr'Data\Descriptor\Prediction_Tables\{super}{sampling}\{target}\{files[i]}_{selection}{parity}_pred'
+        super = "super" if stad_exp else "" 
+        base_file_name = os.path.join(os.config.PREDICTIONS_DIR,super,sampling,target,f"{files[i]}_{selection}{parity}_pred")
         load.createDirectory(base_file_name)
 
         pretty_report_file_name = base_file_name + '.txt'
