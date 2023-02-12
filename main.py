@@ -18,7 +18,11 @@ if not sys.warnoptions:
 # With only linreg and 2 iterations,It takes 2 minutes and 50 seconds with layer parallelization
 # 7 minutes and 12 seconds when specifying -N1
 # it's not paralyzing possibly because the first run is using all the memory
-# with everything it takes about 2 hours
+# with everything it takes about 2 hours 32 course
+
+# # With only linreg and 2 iterationsAnd 4 cores
+# ge: 3:19 915 mb
+# gen: 1:05 410mb
 def main():
     stad_stage_exp = True
     # aak_ge takes a while. chokes during feature selection COAD even with 5

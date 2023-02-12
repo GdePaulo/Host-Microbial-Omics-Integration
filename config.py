@@ -8,7 +8,7 @@ prediction_bounds = {
 }
 
 sampling = ["random_sampling"]#["cv", "random_sampling"]
-random_sampling_iterations = 1#00
+random_sampling_iterations = 2#00
 random_sampling_training_portion = 0.8
 
 selection_types = ["linreg", "chi2", "elasticnet"]
@@ -24,6 +24,7 @@ visualization_packages = {
     "base": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge'],
     "base&parity": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge(parity)"],
     "base&ae": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge_ae"],
+    "stadstage": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge_ae"],
 }
 
 modality_file_name_to_name = {
