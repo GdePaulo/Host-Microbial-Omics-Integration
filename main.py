@@ -23,6 +23,7 @@ if not sys.warnoptions:
 # # With only linreg and 2 iterationsAnd 4 cores
 # ge: 3:19 915 mb
 # gen: 1:05 410mb
+# with ae with 30 features same settings it's 15 seconds
 def main():
     stad_stage_exp = True
     # aak_ge takes a while. chokes during feature selection COAD even with 5
