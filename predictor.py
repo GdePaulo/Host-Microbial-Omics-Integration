@@ -3,8 +3,9 @@ import imp
 from importlib.metadata import metadata
 from operator import index
 
-from sklearn.model_selection import train_test_split, StratifiedKFold, GridSearchCV
+from sklearn.model_selection import train_test_split, StratifiedKFold, GridSearchCV, RandomizedSearchCV
 from sklearn.linear_model import LogisticRegression, LinearRegression, ElasticNet
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report, average_precision_score, log_loss
 import loader as load
@@ -84,14 +85,18 @@ def getTunedModel(estimator, x_inner, y_inner, random_state=42, scoring="neg_roo
 
     inner_cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=random_state)
 
-    grid_search = GridSearchCV(
+    # grid_search = GridSearchCV(
+    grid_search = RandomizedSearchCV(
+        param_distributions = param_grid,
+        n_iter = 100,
         estimator=estimator,
-        param_grid=param_grid,
+        # param_grid=param_grid,
         cv=inner_cv,
         scoring=scoring, #https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
         refit=True,
         return_train_score=True,
-        n_jobs=-1)
+        n_jobs=4,
+        random_state=0)
 
     grid_search.fit(x_inner, y_inner)
     
@@ -185,26 +190,33 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
 
     return y_tests, y_predicteds, selected_features 
 
-def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampling="cv", selection="chi2", modality_selection_parity=False, stad_exp=False):
+def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampling="cv", selection="chi2", modality_selection_parity=False, stad_exp=False, selected_model="no"):
     categorical = True
 
     for i, d in enumerate(data):
 
         if stad_exp:
             print("Running special STAD-STAGE experiments")
-            d = load.attachStageStatus(d)
-            model = ElasticNet(random_state=0)
-            model_name = "elasticnet"
-        elif target == "tumor":
+            
+        if target == "tumor":
             d = load.attachTumorStatus(d)
-            model = SVC(random_state=0)
-            model_name = "svc"
         elif target == "stage":
             d = load.attachStageStatus(d)
             # model = LogisticRegression(multi_class='multinomial', max_iter=400, random_state=0)
+
+        if selected_model == "ElasticNet":
+            model = ElasticNet(random_state=0)
+            model_name = "elasticnet"
+        elif selected_model == "SVC":
+            model = SVC(random_state=0)
+            model_name = "svc"
+        elif selected_model == "LinearRegression":
             model = LinearRegression()
             model_name = "linreg"
-    
+        elif selected_model == "RandomForestRegressor":
+            model = RandomForestRegressor(random_state=0)
+            model_name = "rfreg"
+
         preload_features = True
         if selection == "chi2":
             # Do not preload because they are not Sorted when using chi2
@@ -291,7 +303,7 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
         prediction_performances, prediction_outputs, prediction_features = final_reports
         parity = "(parity)" if enforce_modality_parity else "" 
         super = "super" if stad_exp else "" 
-        base_file_name = os.path.join(config.PREDICTIONS_DIR,super,sampling,target,f"{files[i]}_{selection}{parity}_pred")
+        base_file_name = os.path.join(config.PREDICTIONS_DIR,super,sampling,target,model_name,f"{files[i]}_{selection}{parity}_pred")
         load.createDirectory(base_file_name)
 
         pretty_report_file_name = base_file_name + '.txt'

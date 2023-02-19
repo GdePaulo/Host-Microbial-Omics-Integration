@@ -8,7 +8,7 @@ prediction_bounds = {
 }
 
 sampling = ["random_sampling"]#["cv", "random_sampling"]
-random_sampling_iterations = 200
+random_sampling_iterations = 2
 random_sampling_training_portion = 0.8
 
 selection_types = ["linreg", "chi2", "elasticnet"]
@@ -33,6 +33,8 @@ modality_file_name_to_name = {
     'tcma_gen_aak_ge': "GE ∩ GENUS",
     'tcma_gen_aak_ge(parity)': "GE ∩ GENUS (parity)",
     'tcma_gen_aak_ge_ae': "GE ∩ GENUS (ae)",
+    'aak_ge_ae': "GE (ae)",
+    'tcma_gen_ae': "GENUS (ae)",
 }
 
 all_features, _ = load.getFeatures()
@@ -45,6 +47,8 @@ modality_features = {
     'tcma_gen': tcma_gen_features,
     'tcma_gen_aak_ge': tcma_gen_aak_ge_features,
     'tcma_gen_aak_ge_ae': tcma_gen_aak_ge_ae_features,
+    'aak_ge_ae': tcma_gen_aak_ge_ae_features,
+    'tcma_gen_ae': tcma_gen_aak_ge_ae_features,
 }
 
 # Maybe also tune normalize and tol
@@ -52,7 +56,22 @@ model_hyperparameter_ranges = {
     "ElasticNet": {
         "alpha" : [1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 0.0, 1.0, 10.0, 100.0],
         "l1_ratio" : [step/10 for step in range(0, 10)]
-     }
+     },
+     # https://towardsdatascience.com/hyperparameter-tuning-the-random-forest-in-python-using-scikit-learn-28d2aa77dd74
+    "RandomForestRegressor": {
+        # "n_estimators" : [step * 200 for step in range(1, 11)],
+        "n_estimators" : [5, 20, 50, 100],
+        # Number of features to consider at every split
+        "max_features" : ['auto', 'sqrt'],
+        # Maximum number of levels in tree
+        "max_depth" : [step * 10 for step in range(1, 11)],
+        # Minimum number of samples required to split a node
+        "min_samples_split" : [2, 5, 10],
+        # Minimum number of samples required at each leaf node
+        "min_samples_leaf" : [1, 2, 4],
+        # Method of selecting samples for training each tree
+        "bootstrap" : [True, False]
+    }
 }
 
 model_hyperparameter_scoring = {

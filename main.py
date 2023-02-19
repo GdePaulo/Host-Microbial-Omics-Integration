@@ -26,6 +26,12 @@ if not sys.warnoptions:
 # with ae with 30 features same settings it's 15 seconds
 def main():
     stad_stage_exp = True
+
+    prediction_models = {
+        "tumor": "SVC",
+        "stage": "RandomForestRegressor"
+    }
+
     # aak_ge takes a while. chokes during feature selection COAD even with 5
     for target in config.prediction_targets[1:]:
 
@@ -39,6 +45,7 @@ def main():
             specific_data = load.getSpecificData(chosen_layer, data, files)
             data = [specific_data]
             files = [chosen_layer]
+            # print("SPec data,", specific_data)
         else:
             print("Running for all layers")
             data, files = load.loadAll(includeStage=(target=="stage"), sameSamples=True, skipGenes=False)
@@ -56,7 +63,7 @@ def main():
                         genus_overlapping_ge  = load.getSpecificData(genus_overlapping_ge_name, data, files)
                         pred.runExperiments([genus_overlapping_ge], [genus_overlapping_ge_name], target=target, sampling=sampling, selection=selection, modality_selection_parity=enforce_modality_parity, stad_exp=stad_stage_exp)
                     else:
-                        pred.runExperiments(data[:], files[:], target=target, sampling=sampling, selection=selection, modality_selection_parity=enforce_modality_parity, stad_exp=stad_stage_exp)
+                        pred.runExperiments(data[:], files[:], target=target, sampling=sampling, selection=selection, modality_selection_parity=enforce_modality_parity, stad_exp=stad_stage_exp, selected_model=prediction_models[target])
                     
 if __name__ == "__main__":
     start_time = time.time()
