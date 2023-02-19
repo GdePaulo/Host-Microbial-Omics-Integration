@@ -24,7 +24,8 @@ visualization_packages = {
     "base": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge'],
     "base&parity": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge(parity)"],
     "base&ae": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge_ae"],
-    "stadstage": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge_ae"],
+    "super_base": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge'],
+    "super_base&ae": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge_ae"],
 }
 
 modality_file_name_to_name = {
@@ -60,11 +61,12 @@ model_hyperparameter_ranges = {
      # https://towardsdatascience.com/hyperparameter-tuning-the-random-forest-in-python-using-scikit-learn-28d2aa77dd74
     "RandomForestRegressor": {
         # "n_estimators" : [step * 200 for step in range(1, 11)],
-        "n_estimators" : [5, 20, 50, 100],
+        "n_estimators" : [5, 20, 50, 100, 200, 400],
         # Number of features to consider at every split
         "max_features" : ['auto', 'sqrt'],
         # Maximum number of levels in tree
-        "max_depth" : [step * 10 for step in range(1, 11)],
+        # "max_depth" : [step * 10 for step in range(1, 11)],
+        "max_depth" : [10, 30, 60, 100],
         # Minimum number of samples required to split a node
         "min_samples_split" : [2, 5, 10],
         # Minimum number of samples required at each leaf node

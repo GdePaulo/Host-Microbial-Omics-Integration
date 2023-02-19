@@ -8,6 +8,9 @@ import sys
 import os
 import warnings
 
+
+# CHECKLIST: * Reset iterations * Increase timeout
+
 # Ignore warnings https://stackoverflow.com/questions/53784971/how-to-disable-convergencewarning-using-sklearn#comment111709503_55595680
 if not sys.warnoptions:
     warnings.simplefilter("ignore")
@@ -24,6 +27,11 @@ if not sys.warnoptions:
 # ge: 3:19 915 mb
 # gen: 1:05 410mb
 # with ae with 30 features same settings it's 15 seconds
+
+# Linreg, 2 iter, 4/8/8 cores, RF, RandomizedSearch
+# gen/ge/genge = 3:56/7:56/7:30/
+# 15 iter
+# gen/ge/genge = 25:14/53:10/53:38
 def main():
     stad_stage_exp = True
 

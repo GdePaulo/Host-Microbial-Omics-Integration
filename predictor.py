@@ -95,7 +95,7 @@ def getTunedModel(estimator, x_inner, y_inner, random_state=42, scoring="neg_roo
         scoring=scoring, #https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
         refit=True,
         return_train_score=True,
-        n_jobs=4,
+        n_jobs=-1,
         random_state=0)
 
     grid_search.fit(x_inner, y_inner)
@@ -206,7 +206,7 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
 
         if selected_model == "ElasticNet":
             model = ElasticNet(random_state=0)
-            model_name = "elasticnet"
+            model_name = "enet"
         elif selected_model == "SVC":
             model = SVC(random_state=0)
             model_name = "svc"

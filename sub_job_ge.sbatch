@@ -3,7 +3,7 @@
 #SBATCH --job-name=holo-ge
 #SBATCH --partition=general
 #SBATCH --qos=short
-#SBATCH --time=0:10:00
+#SBATCH --time=2:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=2000
