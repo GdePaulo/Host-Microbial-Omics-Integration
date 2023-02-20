@@ -8,7 +8,7 @@ prediction_bounds = {
 }
 
 sampling = ["random_sampling"]#["cv", "random_sampling"]
-random_sampling_iterations = 100
+random_sampling_iterations = 200
 random_sampling_training_portion = 0.8
 
 selection_types = ["linreg", "chi2", "elasticnet"]
@@ -26,6 +26,9 @@ visualization_packages = {
     "base&ae": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge_ae"],
     "super_base": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge'],
     "super_base&ae": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge_ae"],
+    "super_ae": ['aak_ge_ae', 'tcma_gen_ae', "tcma_gen_aak_ge_ae"],
+    "super_base&ae&nmf": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge_ae", "tcma_gen_aak_ge_nmf"],
+    "super_base&nmf": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge_nmf"],
 }
 
 modality_file_name_to_name = {
@@ -36,20 +39,24 @@ modality_file_name_to_name = {
     'tcma_gen_aak_ge_ae': "GE ∩ GENUS (ae)",
     'aak_ge_ae': "GE (ae)",
     'tcma_gen_ae': "GENUS (ae)",
+    'tcma_gen_aak_ge_nmf': "GE ∩ GENUS (nmf)",
 }
 
 all_features, _ = load.getFeatures()
 tcma_gen_features, aak_ge_features = all_features
 tcma_gen_aak_ge_features = aak_ge_features + tcma_gen_features
-tcma_gen_aak_ge_ae_features = list(range(30))
+tcma_gen_aak_ge_ae_features = list(range(30)) 
+tcma_gen_aak_ge_nmf_features = list(range(30)) 
 
 modality_features = {
     "aak_ge": aak_ge_features,
     'tcma_gen': tcma_gen_features,
     'tcma_gen_aak_ge': tcma_gen_aak_ge_features,
+    'tcma_gen_aak_ge(parity)': tcma_gen_aak_ge_features,
     'tcma_gen_aak_ge_ae': tcma_gen_aak_ge_ae_features,
     'aak_ge_ae': tcma_gen_aak_ge_ae_features,
     'tcma_gen_ae': tcma_gen_aak_ge_ae_features,
+    'tcma_gen_aak_ge_nmf': tcma_gen_aak_ge_nmf_features,
 }
 
 # Maybe also tune normalize and tol
