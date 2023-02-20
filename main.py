@@ -32,6 +32,9 @@ if not sys.warnoptions:
 # gen/ge/genge = 3:56/7:56/7:30/
 # 15 iter
 # gen/ge/genge = 25:14/53:10/53:38
+
+# 2 iter, changed config
+# genge = 10:20
 def main():
     stad_stage_exp = True
 
