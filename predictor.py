@@ -96,7 +96,7 @@ def getTunedModel(estimator, x_inner, y_inner, random_state=42, scoring="neg_roo
         refit=True,
         return_train_score=True,
         n_jobs=-1,
-        random_state=0)
+        random_state=random_state)
 
     grid_search.fit(x_inner, y_inner)
     
@@ -120,8 +120,9 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
         p_per_modality = round(p/2)
 
     for i in range(config.random_sampling_iterations):
+        iteration_seed = 42+i
         # print(f"Random sampling iteration {i}")
-        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=(1 - config.random_sampling_training_portion), stratify=y, random_state=42+i)
+        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=(1 - config.random_sampling_training_portion), stratify=y, random_state=iteration_seed)
         
 
         # print("Selecting features")
@@ -170,7 +171,7 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
         if hyperp_tuning:
             print("Hyperparameter tuning model")
         # print("Fitting model")
-            predictor = getTunedModel(model, x_train_selected, y_train)
+            predictor = getTunedModel(model, x_train_selected, y_train, random_state=iteration_seed)
         else:
             model.fit(x_train_selected, y_train)
             predictor = model

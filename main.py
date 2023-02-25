@@ -22,6 +22,7 @@ if not sys.warnoptions:
 # 7 minutes and 12 seconds when specifying -N1
 # it's not paralyzing possibly because the first run is using all the memory
 # with everything it takes about 2 hours 32 course
+# 8/16/16 200 iter is about  30 mins / 1h / 1h
 
 # # With only linreg and 2 iterationsAnd 4 cores
 # ge: 3:19 915 mb
@@ -43,8 +44,8 @@ def main():
 
     prediction_models = {
         "tumor": "SVC",
-        # "stage": "RandomForestRegressor"
-        "stage": "ElasticNet"
+        "stage": "RandomForestRegressor"
+        # "stage": "ElasticNet"
     }
 
     # aak_ge takes a while. chokes during feature selection COAD even with 5
@@ -65,6 +66,7 @@ def main():
             print("Running for all layers")
             data, files = load.loadAll(includeStage=(target=="stage"), sameSamples=True, skipGenes=False)
 
+        print("Using model", prediction_models[target], " for", target)
         for sampling in config.sampling[:]:
             for selection in config.selection_types[:1]:
                 # pred.runExperiments(data[1:2], files[1:2], target=target, sampling=sampling, selection=selection)
@@ -76,7 +78,7 @@ def main():
                     if enforce_modality_parity:
                         genus_overlapping_ge_name = "tcma_gen_aak_ge"
                         genus_overlapping_ge  = load.getSpecificData(genus_overlapping_ge_name, data, files)
-                        pred.runExperiments([genus_overlapping_ge], [genus_overlapping_ge_name], target=target, sampling=sampling, selection=selection, modality_selection_parity=enforce_modality_parity, stad_exp=stad_stage_exp)
+                        pred.runExperiments([genus_overlapping_ge], [genus_overlapping_ge_name], target=target, sampling=sampling, selection=selection, modality_selection_parity=enforce_modality_parity, stad_exp=stad_stage_exp, selected_model=prediction_models[target])
                     else:
                         pred.runExperiments(data[:], files[:], target=target, sampling=sampling, selection=selection, modality_selection_parity=enforce_modality_parity, stad_exp=stad_stage_exp, selected_model=prediction_models[target])
                     
