@@ -9,7 +9,7 @@ import os
 import warnings
 
 
-# CHECKLIST: * Reset iterations * Increase batch timeout * Reset n_jobs * Upload integration files
+# CHECKLIST: * Reset iterations * Increase batch timeout * Reset n_jobs * Upload integration files (refresh) * Change pred model
 
 # Ignore warnings https://stackoverflow.com/questions/53784971/how-to-disable-convergencewarning-using-sklearn#comment111709503_55595680
 if not sys.warnoptions:
@@ -39,13 +39,16 @@ if not sys.warnoptions:
 
 # 100 iter, 4/16/16
 # gen/ge/genge = >6/9/9
+
+# 200 iter, 8/16/16
+# gen/ge/genge = 4h:45m/14h:40m
 def main():
     stad_stage_exp = True
 
     prediction_models = {
         "tumor": "SVC",
-        "stage": "RandomForestRegressor"
-        # "stage": "ElasticNet"
+        # "stage": "RandomForestRegressor"
+        "stage": "ElasticNet"
     }
 
     # aak_ge takes a while. chokes during feature selection COAD even with 5

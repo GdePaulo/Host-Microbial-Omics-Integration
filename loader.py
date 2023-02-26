@@ -63,7 +63,7 @@ def loadGEIntegratedWithTCMA(layer="tcma_gen_aak_ge", includeStage=False, minmax
     return integration
 
 
-def loadAll(includeStage = False, sameSamples=False, skipGenes=False, skipAE=False):
+def loadAll(includeStage = False, sameSamples=False, skipGenes=False, skipAE=False, skipNMF=False):
     tcma_genus = loadTCMA("genus")
     tcma_genus_aak_ge = loadGEOverlappingTCMA("genus", includeStage)
 
@@ -73,8 +73,10 @@ def loadAll(includeStage = False, sameSamples=False, skipGenes=False, skipAE=Fal
         tcma_genus_aak_ge_ae = loadGEIntegratedWithTCMA(includeStage=includeStage, minmax=True, hidden_features=30)
         aak_ge_ae = loadGEIntegratedWithTCMA(layer="aak_ge", includeStage=includeStage, minmax=True, hidden_features=30)
         tcma_genus_ae = loadGEIntegratedWithTCMA(layer="tcma_gen", includeStage=includeStage, minmax=True, hidden_features=30)
-
-    tcma_genus_aak_ge_nmf = loadGEIntegratedWithTCMA(includeStage=includeStage, minmax=True, hidden_features=30, integration_method="nmf")
+    if not skipNMF: 
+        tcma_genus_aak_ge_nmf = loadGEIntegratedWithTCMA(includeStage=includeStage, minmax=True, hidden_features=30, integration_method="nmf")
+        aak_ge_nmf = loadGEIntegratedWithTCMA(layer="aak_ge", includeStage=includeStage, minmax=True, hidden_features=30, integration_method="nmf")
+        tcma_genus_nmf = loadGEIntegratedWithTCMA(layer="tcma_gen", includeStage=includeStage, minmax=True, hidden_features=30, integration_method="nmf")
 
     if sameSamples:
         overlapping_tcma_genus = tcma_genus.rename(index= lambda s: s[:-1])
@@ -103,8 +105,13 @@ def loadAll(includeStage = False, sameSamples=False, skipGenes=False, skipAE=Fal
         data.append(aak_ge_ae)
         files.append("tcma_gen_ae")
         data.append(tcma_genus_ae)
-    files.append("tcma_gen_aak_ge_nmf")
-    data.append(tcma_genus_aak_ge_nmf)
+    if not skipNMF:
+        files.append("tcma_gen_aak_ge_nmf")
+        data.append(tcma_genus_aak_ge_nmf)
+        files.append("aak_ge_nmf")
+        data.append(aak_ge_nmf)
+        files.append("tcma_gen_nmf")
+        data.append(tcma_genus_nmf)
     
     return data, files
 

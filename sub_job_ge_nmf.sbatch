@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#SBATCH --job-name=holo-genge-nmf
+#SBATCH --job-name=holo-ge-nmf
 #SBATCH --partition=general 
 #SBATCH --qos=short
 #SBATCH --time=1:00:00
@@ -12,4 +12,4 @@
 module use /opt/insy/modulefiles
 module load cuda/10.0 cudnn/10.0-7.4.2.24
 
-srun python main.py tcma_gen_aak_ge_nmf
+srun python main.py aak_ge_nmf
