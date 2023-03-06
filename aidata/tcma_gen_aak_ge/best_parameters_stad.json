@@ -1,1 +1,1 @@
-{"module": {"first_hidden_size": 200, "hidden_features": 100, "input_features": 5221, "second_hidden_size": 0}, "optimizer": {"lr": 0.0001, "weight_decay": 1e-08}}
+{"module": {"first_hidden_size": 200, "hidden_features": 100, "input_features": 5221, "second_hidden_size": 100}, "optimizer": {"lr": 0.0001, "weight_decay": 1e-08}}
