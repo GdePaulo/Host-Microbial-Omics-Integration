@@ -94,3 +94,11 @@ model_hyperparameter_scoring = {
 }
 
 PREDICTIONS_DIR = os.path.join("Data","Descriptor","Prediction_Tables")
+
+colorblind_colors = [
+    "#648FFF",
+    "#785EF0",
+    "#DC267F",
+    "#FE6100",
+    "#FFB000"
+]
