@@ -1,0 +1,1 @@
+{"general": {"max_epochs": 40}, "module": {"first_hidden_size": 200, "hidden_features": 50, "input_features": 5000, "second_hidden_size": 0}, "optimizer": {"lr": 0.01, "weight_decay": 1e-08}}

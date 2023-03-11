@@ -1,0 +1,1 @@
+{"module": {"first_hidden_size": 50, "hidden_features": 15, "input_features": 221, "second_hidden_size": 0}, "optimizer": {"lr": 0.01, "weight_decay": 1e-08}, "general": {"max_epochs": 40, "module__first_hidden_size": 100, "module__hidden_features": 30, "module__input_features": 221, "module__second_hidden_size": 0}}
