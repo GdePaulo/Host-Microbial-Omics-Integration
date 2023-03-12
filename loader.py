@@ -54,7 +54,7 @@ def loadGEIntegratedWithTCMA(layer="tcma_gen_aak_ge", includeStage=False, minmax
     else:
         integration_file_path = integration_base_file_path + "tumor/"
 
-    integration_file_path += f"extrnr_{hidden_features}/{layer}"
+    integration_file_path += f"{layer}"
 
     integration_file_path += "_minmax" if minmax else ""
     integration_file_path += ".csv"

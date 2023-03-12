@@ -3,9 +3,9 @@
 #SBATCH --job-name=holo-gen-ae
 #SBATCH --partition=general
 #SBATCH --qos=short
-#SBATCH --time=1:00:00
+#SBATCH --time=3:00:00
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=16
 #SBATCH --mem=2000
 #SBATCH --gres=gpu
 
