@@ -72,7 +72,7 @@ def generateSelectedFeaturesDataFrame(selected_features):
 # is not bigger than the total amount of available features for the current modality.
 def isMaximumSelectableP(feature_row, p):
     max_p = max(config.feature_amounts)
-    total_features = len(feature_row.columns)
+    total_features = len(feature_row.columns)    
     if total_features < max_p:
         ps_smaller_than_total_features = [p_candidate for p_candidate in config.feature_amounts if p_candidate < total_features]
         return p == max(ps_smaller_than_total_features)
@@ -240,8 +240,8 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
                 if target=="stage" and files[i] == "tcma_gen_aak_ge" and c == "READ":
                     continue
                 nr_columns = len(x.columns)
-                if nr_columns < p:
-                    print(f"Skipping prediction iteration for {files[i]} as p:{p}>{nr_columns}")
+                if nr_columns <= p:
+                    print(f"Skipping prediction iteration for {files[i]} as p:{p}>={nr_columns}")
                     continue
 
                 print(f"Running {files[i]} {target} {c} {p} {sampling} {selection}")
