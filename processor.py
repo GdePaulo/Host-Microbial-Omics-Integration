@@ -41,7 +41,7 @@ def getTSNE(x):
     return tsne_df
 
 # To do: fix chi2 to return list Sorted based on feature importance
-def selectFeatures(x, y, k=10, method="chi2"):
+def selectFeatures(x, y, k=10, method="chi2", random_seed=0):
     if k == 0:
         # return x.copy()
         return list(range(len(x.columns)))
@@ -57,9 +57,9 @@ def selectFeatures(x, y, k=10, method="chi2"):
         if method == "linreg":
             model = LinearRegression()
         elif method == "elasticnet":
-            model = ElasticNet(random_state=0)
+            model = ElasticNet(random_state=random_seed)
         elif method == "lasso":
-            model = Lasso(random_state=0)
+            model = Lasso(random_state=random_seed)
         model.fit(x, y)
 
         features_with_coefficients = pd.DataFrame({"feature":x.columns,"coefficients":np.transpose(model.coef_)})

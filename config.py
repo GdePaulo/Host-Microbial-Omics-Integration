@@ -110,10 +110,14 @@ model_hyperparameter_scoring = {
 
 PREDICTIONS_DIR = os.path.join("Data","Descriptor","Prediction_Tables")
 
+# https://www.datylon.com/blog/data-visualization-for-colorblind-readers#:~:text=The%20first%20rule%20of%20making,out%20of%20these%20two%20hues.
+# https://personal.sron.nl/~pault/
 colorblind_colors = [
-    "#648FFF",
-    "#785EF0",
-    "#DC267F",
-    "#FE6100",
-    "#FFB000"
+    "#0077BB",
+    "#CC3311",
+    "#EE7733",
+    "#EE3377",
+    "#009988",
+    "#33BBEE",
+    "#BBBBBB",
 ]

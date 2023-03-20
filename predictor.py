@@ -131,8 +131,8 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
                 x_train_with_genus_features = x_train[gen]
                 x_train_with_ge_features = x_train[ge]
 
-                best_indices_genus = pr.selectFeatures(x=x_train_with_genus_features, y=y_train, k=p_per_modality, method=selection)
-                best_indices_ge = pr.selectFeatures(x=x_train_with_ge_features, y=y_train, k=p_per_modality, method=selection)
+                best_indices_genus = pr.selectFeatures(x=x_train_with_genus_features, y=y_train, k=p_per_modality, method=selection, random_seed=iteration_seed)
+                best_indices_ge = pr.selectFeatures(x=x_train_with_ge_features, y=y_train, k=p_per_modality, method=selection, random_seed=iteration_seed)
 
                 # Do it like this to preserve order
                 best_features_genus = [gen[best_index] for best_index in best_indices_genus]
@@ -147,18 +147,18 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
                 if preload_features:
                     loaded_features[i] = (best_indices_genus_original, best_indices_ge_original)
             elif p==0:
-                best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection)
+                best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection, random_seed=iteration_seed)
             else:
                 if preload_features:
                     best_indices_genus, best_indices_ge = loaded_features[i]
                     best_indices = best_indices_genus[:p_per_modality] + best_indices_ge[:p_per_modality]
         else:
             if isMaximumSelectableP(x, p) or not preload_features:
-                best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection)
+                best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection, random_seed=iteration_seed)
                 if preload_features:
                     loaded_features[i] = best_indices
             elif p==0:
-                best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection)
+                best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection, random_seed=iteration_seed)
             else:
                 if preload_features:
                     best_indices = loaded_features[i][:p]
