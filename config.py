@@ -1,5 +1,7 @@
 import loader as load
 import os
+from sklearn.utils.fixes import loguniform
+import numpy as np
 
 prediction_targets = ["tumor", "stage"]
 prediction_bounds = {
@@ -11,7 +13,7 @@ sampling = ["random_sampling"]#["cv", "random_sampling"]
 random_sampling_iterations = 200
 random_sampling_training_portion = 0.8
 
-selection_types = ["linreg", "chi2", "elasticnet"]
+selection_types = ["linreg", "chi2", "elasticnet", "lasso"]
 # feature_amounts = [0, 6, 12]
 feature_amounts = [0, 6, 10, 26, 50, 100, 200]
 # feature_amounts = [0, 5, 10, 25, 50, 100, 200]
@@ -87,7 +89,19 @@ model_hyperparameter_ranges = {
         "min_samples_leaf" : [1, 2, 4],
         # Method of selecting samples for training each tree
         "bootstrap" : [True, False]
-    }
+    }, 
+    "SVC": [
+        {
+            'C': np.logspace(-10, 10, 21),
+            'gamma': np.logspace(-10, 10, 21).tolist()+['scale', 'auto'],
+            'kernel': ['rbf'],
+            'class_weight':['balanced', None]
+        },
+        {
+            'C': np.logspace(-10, 10, 21),
+            'kernel': ['linear'],
+            'class_weight':['balanced', None]
+        }]
 }
 
 model_hyperparameter_scoring = {

@@ -11,7 +11,7 @@ from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 from sklearn.feature_selection import SelectKBest, chi2
 
-from sklearn.linear_model import LogisticRegression, LinearRegression, ElasticNet
+from sklearn.linear_model import LogisticRegression, LinearRegression, ElasticNet, Lasso
 from sklearn.svm import SVC
 
 import math
@@ -58,6 +58,8 @@ def selectFeatures(x, y, k=10, method="chi2"):
             model = LinearRegression()
         elif method == "elasticnet":
             model = ElasticNet(random_state=0)
+        elif method == "lasso":
+            model = Lasso(random_state=0)
         model.fit(x, y)
 
         features_with_coefficients = pd.DataFrame({"feature":x.columns,"coefficients":np.transpose(model.coef_)})

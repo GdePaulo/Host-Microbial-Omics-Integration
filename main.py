@@ -42,6 +42,17 @@ if not sys.warnoptions:
 
 # 200 iter, 8/16/16
 # gen/ge/genge = 4h:45m/14h:40m
+
+
+# TUMOR/ALL CANCERS
+# SVM, chi2, hyperp tuning, 2 iterations and 32/_/64 cores and 3000/_/6000 gb memory
+# gen/ge/genge(+parity) = 1:30/_/2:05
+
+# STAGE/STAD
+# elasticnet, lasso, hyperp tuning, 2 iterations and 8/_/16 cores and 2000/_/2000 gb memory
+# gen/ge/genge(+parity) = 0:47/_/2:00
+# elasticnet, enet, hyperp tuning, 2 iterations and 8/_/16 cores and 2000/_/2000 gb memory
+# gen/ge/genge(+parity) = 0:35/_/1:41
 def main():
     stad_stage_exp = True
 
@@ -69,16 +80,19 @@ def main():
             print("Running for all layers")
             data, files = load.loadAll(includeStage=(target=="stage"), sameSamples=True, skipGenes=False)
 
-        print("Using model", prediction_models[target], " for", target)
+        print("Using model", prediction_models[target], "for", target)
         for sampling in config.sampling[:]:
-            for selection in config.selection_types[:1]:
+            for selection in config.selection_types[-2:-1]:
                 # pred.runExperiments(data[1:2], files[1:2], target=target, sampling=sampling, selection=selection)
                 
-                for parity in config.modality_parities[:1]:
+                for parity in config.modality_parities[:]:
                     enforce_modality_parity = (parity == "parity")
 
                     # Only run for overlap set if you run with parity
                     if enforce_modality_parity:
+                        if len(sys.argv) > 1 and sys.argv[1] != "tcma_gen_aak_ge":
+                            print(f"Skipping modality parity enforcement because layer {sys.argv[1]} is invalid")
+                            continue
                         genus_overlapping_ge_name = "tcma_gen_aak_ge"
                         genus_overlapping_ge  = load.getSpecificData(genus_overlapping_ge_name, data, files)
                         pred.runExperiments([genus_overlapping_ge], [genus_overlapping_ge_name], target=target, sampling=sampling, selection=selection, modality_selection_parity=enforce_modality_parity, stad_exp=stad_stage_exp, selected_model=prediction_models[target])

@@ -1,0 +1,8 @@
+precision,recall,f1-score,support-0,support-1,support-2,support-3,support-4,iterations,cancer,p,sampling,model,selection
+0.06363636363636363,0.2,0.09655172413793103,2.0,4.0,7.0,6.0,3.0,2,STAD,200,random_sampling,enet,lasso
+0.056818181818181816,0.17142857142857143,0.08531289910600255,2.0,4.0,7.0,6.0,3.0,2,STAD,100,random_sampling,enet,lasso
+0.06363636363636363,0.2,0.09655172413793103,2.0,4.0,7.0,6.0,3.0,2,STAD,50,random_sampling,enet,lasso
+0.06363636363636363,0.2,0.09655172413793103,2.0,4.0,7.0,6.0,3.0,2,STAD,26,random_sampling,enet,lasso
+0.06363636363636363,0.2,0.09655172413793103,2.0,4.0,7.0,6.0,3.0,2,STAD,10,random_sampling,enet,lasso
+0.06363636363636363,0.2,0.09655172413793103,2.0,4.0,7.0,6.0,3.0,2,STAD,6,random_sampling,enet,lasso
+0.06363636363636363,0.2,0.09655172413793103,2.0,4.0,7.0,6.0,3.0,2,STAD,0,random_sampling,enet,lasso

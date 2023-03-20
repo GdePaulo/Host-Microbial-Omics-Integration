@@ -1,0 +1,32 @@
++-----------+--------+----------+-----------+-----------+------------+--------+-----+-----------------+-------+-----------+
+| precision | recall | f1-score | support-0 | support-1 | iterations | cancer |  p  |     sampling    | model | selection |
++-----------+--------+----------+-----------+-----------+------------+--------+-----+-----------------+-------+-----------+
+|    0.45   |  0.5   |  0.474   |    1.0    |    9.0    |     2      |  COAD  | 200 | random_sampling |  svc  |    chi2   |
+|    0.45   |  0.5   |  0.474   |    1.0    |    9.0    |     2      |  COAD  | 100 | random_sampling |  svc  |    chi2   |
+|    0.45   |  0.5   |  0.474   |    1.0    |    9.0    |     2      |  COAD  |  50 | random_sampling |  svc  |    chi2   |
+|   0.439   | 0.417  |  0.424   |    1.0    |    9.0    |     2      |  COAD  |  26 | random_sampling |  svc  |    chi2   |
+|    0.45   |  0.5   |  0.474   |    1.0    |    9.0    |     2      |  COAD  |  10 | random_sampling |  svc  |    chi2   |
+|    0.45   |  0.5   |  0.474   |    1.0    |    9.0    |     2      |  COAD  |  6  | random_sampling |  svc  |    chi2   |
+|    0.45   |  0.5   |  0.474   |    1.0    |    9.0    |     2      |  COAD  |  0  | random_sampling |  svc  |    chi2   |
+|   0.463   | 0.481  |  0.472   |    1.0    |    13.0   |     2      |  ESCA  | 200 | random_sampling |  svc  |    chi2   |
+|   0.463   | 0.481  |  0.472   |    1.0    |    13.0   |     2      |  ESCA  | 100 | random_sampling |  svc  |    chi2   |
+|   0.464   |  0.5   |  0.481   |    1.0    |    13.0   |     2      |  ESCA  |  50 | random_sampling |  svc  |    chi2   |
+|   0.463   | 0.481  |  0.472   |    1.0    |    13.0   |     2      |  ESCA  |  26 | random_sampling |  svc  |    chi2   |
+|   0.513   | 0.615  |  0.454   |    1.0    |    13.0   |     2      |  ESCA  |  10 | random_sampling |  svc  |    chi2   |
+|   0.464   |  0.5   |  0.481   |    1.0    |    13.0   |     2      |  ESCA  |  6  | random_sampling |  svc  |    chi2   |
+|   0.463   | 0.481  |  0.472   |    1.0    |    13.0   |     2      |  ESCA  |  0  | random_sampling |  svc  |    chi2   |
+|   0.511   | 0.648  |   0.47   |    1.0    |    32.0   |     2      |  HNSC  | 200 | random_sampling |  svc  |    chi2   |
+|   0.511   | 0.648  |   0.47   |    1.0    |    32.0   |     2      |  HNSC  | 100 | random_sampling |  svc  |    chi2   |
+|   0.511   | 0.648  |   0.47   |    1.0    |    32.0   |     2      |  HNSC  |  50 | random_sampling |  svc  |    chi2   |
+|   0.484   | 0.461  |  0.472   |    1.0    |    32.0   |     2      |  HNSC  |  26 | random_sampling |  svc  |    chi2   |
+|   0.532   | 0.758  |  0.396   |    1.0    |    32.0   |     2      |  HNSC  |  10 | random_sampling |  svc  |    chi2   |
+|   0.483   | 0.445  |  0.463   |    1.0    |    32.0   |     2      |  HNSC  |  6  | random_sampling |  svc  |    chi2   |
+|   0.511   | 0.648  |   0.47   |    1.0    |    32.0   |     2      |  HNSC  |  0  | random_sampling |  svc  |    chi2   |
+|   0.548   |  0.56  |  0.549   |    2.0    |    23.0   |     2      |  STAD  | 200 | random_sampling |  svc  |    chi2   |
+|   0.548   |  0.56  |  0.549   |    2.0    |    23.0   |     2      |  STAD  | 100 | random_sampling |  svc  |    chi2   |
+|   0.548   |  0.56  |  0.549   |    2.0    |    23.0   |     2      |  STAD  |  50 | random_sampling |  svc  |    chi2   |
+|   0.548   |  0.56  |  0.549   |    2.0    |    23.0   |     2      |  STAD  |  26 | random_sampling |  svc  |    chi2   |
+|   0.546   | 0.538  |  0.536   |    2.0    |    23.0   |     2      |  STAD  |  10 | random_sampling |  svc  |    chi2   |
+|   0.547   | 0.549  |  0.543   |    2.0    |    23.0   |     2      |  STAD  |  6  | random_sampling |  svc  |    chi2   |
+|   0.548   |  0.56  |  0.549   |    2.0    |    23.0   |     2      |  STAD  |  0  | random_sampling |  svc  |    chi2   |
++-----------+--------+----------+-----------+-----------+------------+--------+-----+-----------------+-------+-----------+

@@ -104,7 +104,7 @@ def getTunedModel(estimator, x_inner, y_inner, random_state=42, scoring="neg_roo
     return grid_search
 
 loaded_features = {}
-def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, preload_features=True, modality_selection_parity=False, hyperp_tuning=False):
+def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, preload_features=True, modality_selection_parity=False, hyperp_tuning=False, hyperp_scoring="accuracy"):
     
     y_tests = []    
     y_predicteds = []
@@ -171,7 +171,9 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
         if hyperp_tuning:
             print("Hyperparameter tuning model")
         # print("Fitting model")
-            predictor = getTunedModel(model, x_train_selected, y_train, random_state=iteration_seed)
+            predictor = getTunedModel(model, x_train_selected, y_train, random_state=iteration_seed, scoring=hyperp_scoring)
+            best_parameters = predictor.best_params_
+            print(f"Finished tuning param: {best_parameters}")
         else:
             model.fit(x_train_selected, y_train)
             predictor = model
@@ -201,9 +203,11 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
             
         if target == "tumor":
             d = load.attachTumorStatus(d)
+            scoring = "balanced_accuracy"
         elif target == "stage":
             d = load.attachStageStatus(d)
             # model = LogisticRegression(multi_class='multinomial', max_iter=400, random_state=0)
+            scoring = "neg_root_mean_squared_error"
 
         if selected_model == "ElasticNet":
             model = ElasticNet(random_state=0)
@@ -217,6 +221,7 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
         elif selected_model == "RandomForestRegressor":
             model = RandomForestRegressor(random_state=0)
             model_name = "rfreg"
+            
 
         preload_features = True
         if selection == "chi2":
@@ -257,7 +262,7 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
                 
                 # print(f"Running for {files[i]} {c} {p}")
                 if sampling=="random_sampling":
-                    y_tests, y_predicteds, selected_features = runRandomSampling(x, y, model=model, selection=selection, p=p, preload_features=preload_features, modality_selection_parity=enforce_modality_parity, hyperp_tuning=stad_exp)
+                    y_tests, y_predicteds, selected_features = runRandomSampling(x, y, model=model, selection=selection, p=p, preload_features=preload_features, modality_selection_parity=enforce_modality_parity, hyperp_tuning=True, hyperp_scoring=scoring)
                 
                 if categorical:
                     y_predicteds_clipped_and_rounded = [convertPredictionToCategorical(y_predicted, y) for y_predicted in y_predicteds]
@@ -304,7 +309,7 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
         prediction_performances, prediction_outputs, prediction_features = final_reports
         parity = "(parity)" if enforce_modality_parity else "" 
         super = "super" if stad_exp else "" 
-        base_file_name = os.path.join(config.PREDICTIONS_DIR,super,sampling,target,model_name,f"{files[i]}_{selection}{parity}_pred")
+        base_file_name = os.path.join(config.PREDICTIONS_DIR,super,sampling,target,model_name,selection,f"{files[i]}_{selection}{parity}_pred")
         load.createDirectory(base_file_name)
 
         pretty_report_file_name = base_file_name + '.txt'

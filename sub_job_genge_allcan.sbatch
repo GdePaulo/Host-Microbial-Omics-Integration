@@ -1,0 +1,15 @@
+#!/bin/sh
+
+#SBATCH --job-name=holo-genge
+#SBATCH --partition=general
+#SBATCH --qos=medium
+#SBATCH --time=07:10:00
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=64
+#SBATCH --mem=7000
+#SBATCH --gres=gpu
+
+module use /opt/insy/modulefiles
+module load cuda/10.0 cudnn/10.0-7.4.2.24
+
+srun python main.py tcma_gen_aak_ge
