@@ -112,12 +112,15 @@ PREDICTIONS_DIR = os.path.join("Data","Descriptor","Prediction_Tables")
 
 # https://www.datylon.com/blog/data-visualization-for-colorblind-readers#:~:text=The%20first%20rule%20of%20making,out%20of%20these%20two%20hues.
 # https://personal.sron.nl/~pault/
-colorblind_colors = [
-    "#0077BB",
-    "#CC3311",
-    "#EE7733",
-    "#EE3377",
-    "#009988",
-    "#33BBEE",
-    "#BBBBBB",
-]
+colorblind_colors = ['#377eb8',
+                      '#ff7f00',
+                    '#e41a1c',
+
+                      '#984ea3',
+                    '#a65628',
+                  '#f781bf',
+                  '#999999',
+
+                        '#4daf4a',
+                     
+                      '#dede00']
