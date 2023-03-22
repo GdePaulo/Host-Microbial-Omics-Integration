@@ -51,7 +51,7 @@ modality_file_name_to_name = {
 all_features, _ = load.getFeatures()
 tcma_gen_features, aak_ge_features = all_features
 tcma_gen_aak_ge_features = aak_ge_features + tcma_gen_features
-tcma_gen_aak_ge_ae_features = list(range(50)) 
+tcma_gen_aak_ge_ae_features = list(range(100)) 
 tcma_gen_ae_features = list(range(15)) 
 tcma_gen_aak_ge_nmf_features = list(range(30)) 
 

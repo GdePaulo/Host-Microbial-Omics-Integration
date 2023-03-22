@@ -10,7 +10,7 @@ import warnings
 
 
 # CHECKLIST: * Reset iterations * Increase batch timeout * Reset n_jobs * Upload integration files (refresh) * Change pred model
-
+# * Update AE integrated feature number (restart kernel) * Check stad_exp=False * Check cancers in pipeline
 # Ignore warnings https://stackoverflow.com/questions/53784971/how-to-disable-convergencewarning-using-sklearn#comment111709503_55595680
 if not sys.warnoptions:
     warnings.simplefilter("ignore")
@@ -82,7 +82,7 @@ def main():
 
         print("Using model", prediction_models[target], "for", target)
         for sampling in config.sampling[:]:
-            for selection in config.selection_types[-2:-1]:
+            for selection in config.selection_types[2:]: #["linreg", "chi2", "elasticnet", "lasso"]
                 # pred.runExperiments(data[1:2], files[1:2], target=target, sampling=sampling, selection=selection)
                 
                 for parity in config.modality_parities[:]:

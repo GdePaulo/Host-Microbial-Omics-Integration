@@ -233,7 +233,7 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
             enforce_modality_parity = False
 
         final_reports = [None, None, None]
-        for c in ["COAD", "ESCA", "HNSC", "READ", "STAD"][:]:   
+        for c in ["COAD", "ESCA", "HNSC", "READ", "STAD"][-1:]:   
             if stad_exp and (target!="stage" or c!="STAD"):
                 continue
 
@@ -254,6 +254,7 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
                 # Every class must have at least 2 samples
                 # Also, there must be at least two classes for prediction 
                 val_counts = y.value_counts(ascending=True)
+                
                 least_class = val_counts.iloc[0]
 
                 if least_class < 2 or len(val_counts) < 2:
