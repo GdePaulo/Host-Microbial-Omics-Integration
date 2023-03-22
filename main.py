@@ -58,8 +58,8 @@ def main():
 
     prediction_models = {
         "tumor": "SVC",
-        # "stage": "RandomForestRegressor"
-        "stage": "ElasticNet"
+        "stage": "RandomForestRegressor"
+        # "stage": "ElasticNet"
     }
 
     # aak_ge takes a while. chokes during feature selection COAD even with 5
@@ -82,7 +82,7 @@ def main():
 
         print("Using model", prediction_models[target], "for", target)
         for sampling in config.sampling[:]:
-            for selection in config.selection_types[2:]: #["linreg", "chi2", "elasticnet", "lasso"]
+            for selection in config.selection_types[:1]: #["linreg", "chi2", "elasticnet", "lasso"]
                 # pred.runExperiments(data[1:2], files[1:2], target=target, sampling=sampling, selection=selection)
                 
                 for parity in config.modality_parities[:]:

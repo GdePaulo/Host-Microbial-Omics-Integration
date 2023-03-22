@@ -10,7 +10,7 @@ prediction_bounds = {
 }
 
 sampling = ["random_sampling"]#["cv", "random_sampling"]
-random_sampling_iterations = 200
+random_sampling_iterations = 4
 random_sampling_training_portion = 0.8
 
 selection_types = ["linreg", "chi2", "elasticnet", "lasso"]
@@ -53,7 +53,7 @@ tcma_gen_features, aak_ge_features = all_features
 tcma_gen_aak_ge_features = aak_ge_features + tcma_gen_features
 tcma_gen_aak_ge_ae_features = list(range(100)) 
 tcma_gen_ae_features = list(range(15)) 
-tcma_gen_aak_ge_nmf_features = list(range(30)) 
+tcma_gen_aak_ge_nmf_features = list(range(100)) 
 
 modality_features = {
     "aak_ge": aak_ge_features,
@@ -73,6 +73,9 @@ model_hyperparameter_ranges = {
     "ElasticNet": {
         "alpha" : [1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 0.0, 1.0, 10.0, 100.0],
         "l1_ratio" : [step/10 for step in range(0, 10)]
+     },
+    "Lasso": {
+        "alpha" : [1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 0.0, 1.0, 10.0, 100.0],
      },
      # https://towardsdatascience.com/hyperparameter-tuning-the-random-forest-in-python-using-scikit-learn-28d2aa77dd74
     "RandomForestRegressor": {
