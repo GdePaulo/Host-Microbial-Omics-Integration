@@ -27,6 +27,7 @@ visualization_packages = {
     "base&parity": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge(parity)"],
     "base&ae": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge_ae"],
     "super_base": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge'],
+    "super_base&parity": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge(parity)"],
     "super_base&ae": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge_ae"],
     "super_ae": ['aak_ge_ae', 'tcma_gen_ae', "tcma_gen_aak_ge_ae"],
     "super_base&ae&nmf": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge_ae", "tcma_gen_aak_ge_nmf"],

@@ -3,9 +3,9 @@
 #SBATCH --job-name=holo-genge-ae
 #SBATCH --partition=general
 #SBATCH --qos=short
-#SBATCH --time=01:00:00
+#SBATCH --time=04:00:00
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=16
 #SBATCH --mem=2000
 #SBATCH --gres=gpu
 

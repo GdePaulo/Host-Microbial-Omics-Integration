@@ -54,16 +54,16 @@ if not sys.warnoptions:
 # elasticnet, enet, hyperp tuning, 2 iterations and 8/_/16 cores and 2000/_/2000 gb memory
 # gen/ge/genge(+parity) = 0:35/_/1:41
 def main():
-    stad_stage_exp = True
+    stad_stage_exp = False
 
     prediction_models = {
         "tumor": "SVC",
-        # "stage": "RandomForestRegressor"
-        "stage": "ElasticNet"
+        "stage": "RandomForestRegressor"
+        # "stage": "ElasticNet"
     }
 
     # aak_ge takes a while. chokes during feature selection COAD even with 5
-    for target in config.prediction_targets[1:]:
+    for target in config.prediction_targets[:1]:
 
         if len(sys.argv) > 1:
             chosen_layer = sys.argv[1]
@@ -82,7 +82,7 @@ def main():
 
         print("Using model", prediction_models[target], "for", target)
         for sampling in config.sampling[:]:
-            for selection in config.selection_types[-1:]: #["linreg", "chi2", "elasticnet", "lasso", "anova", "pearson"]
+            for selection in config.selection_types[-2:-1]: #["linreg", "chi2", "elasticnet", "lasso", "anova", "pearson"]
                 # pred.runExperiments(data[1:2], files[1:2], target=target, sampling=sampling, selection=selection)
                 
                 for parity in config.modality_parities[:]:

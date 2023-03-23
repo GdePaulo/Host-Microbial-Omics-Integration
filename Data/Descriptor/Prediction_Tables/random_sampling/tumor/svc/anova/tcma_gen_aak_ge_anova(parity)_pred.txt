@@ -1,0 +1,32 @@
++-----------+--------+----------+-----------+-----------+------------+--------+-----+-----------------+-------+-----------+
+| precision | recall | f1-score | support-0 | support-1 | iterations | cancer |  p  |     sampling    | model | selection |
++-----------+--------+----------+-----------+-----------+------------+--------+-----+-----------------+-------+-----------+
+|   0.973   | 0.977  |  0.974   |    1.0    |    9.0    |    200     |  COAD  | 200 | random_sampling |  svc  |   anova   |
+|   0.997   | 0.998  |  0.997   |    1.0    |    9.0    |    200     |  COAD  | 100 | random_sampling |  svc  |   anova   |
+|    1.0    |  1.0   |   1.0    |    1.0    |    9.0    |    200     |  COAD  |  50 | random_sampling |  svc  |   anova   |
+|   0.999   |  1.0   |  0.999   |    1.0    |    9.0    |    200     |  COAD  |  26 | random_sampling |  svc  |   anova   |
+|   0.976   | 0.979  |  0.977   |    1.0    |    9.0    |    200     |  COAD  |  10 | random_sampling |  svc  |   anova   |
+|   0.968   | 0.972  |  0.969   |    1.0    |    9.0    |    200     |  COAD  |  6  | random_sampling |  svc  |   anova   |
+|   0.994   | 0.998  |  0.994   |    1.0    |    9.0    |    200     |  COAD  |  0  | random_sampling |  svc  |   anova   |
+|   0.928   | 0.932  |   0.93   |    1.0    |    13.0   |    200     |  ESCA  | 200 | random_sampling |  svc  |   anova   |
+|   0.924   |  0.93  |  0.926   |    1.0    |    13.0   |    200     |  ESCA  | 100 | random_sampling |  svc  |   anova   |
+|   0.921   | 0.932  |  0.925   |    1.0    |    13.0   |    200     |  ESCA  |  50 | random_sampling |  svc  |   anova   |
+|    0.9    | 0.928  |  0.909   |    1.0    |    13.0   |    200     |  ESCA  |  26 | random_sampling |  svc  |   anova   |
+|   0.874   | 0.919  |  0.887   |    1.0    |    13.0   |    200     |  ESCA  |  10 | random_sampling |  svc  |   anova   |
+|   0.875   | 0.914  |  0.886   |    1.0    |    13.0   |    200     |  ESCA  |  6  | random_sampling |  svc  |   anova   |
+|   0.948   | 0.959  |  0.952   |    1.0    |    13.0   |    200     |  ESCA  |  0  | random_sampling |  svc  |   anova   |
+|   0.866   | 0.895  |  0.875   |    1.0    |    32.0   |    200     |  HNSC  | 200 | random_sampling |  svc  |   anova   |
+|    0.86   | 0.886  |  0.868   |    1.0    |    32.0   |    200     |  HNSC  | 100 | random_sampling |  svc  |   anova   |
+|   0.914   | 0.927  |  0.919   |    1.0    |    32.0   |    200     |  HNSC  |  50 | random_sampling |  svc  |   anova   |
+|   0.919   | 0.925  |  0.921   |    1.0    |    32.0   |    200     |  HNSC  |  26 | random_sampling |  svc  |   anova   |
+|   0.797   |  0.83  |  0.808   |    1.0    |    32.0   |    200     |  HNSC  |  10 | random_sampling |  svc  |   anova   |
+|   0.689   | 0.767  |  0.708   |    1.0    |    32.0   |    200     |  HNSC  |  6  | random_sampling |  svc  |   anova   |
+|    0.92   | 0.932  |  0.923   |    1.0    |    32.0   |    200     |  HNSC  |  0  | random_sampling |  svc  |   anova   |
+|    1.0    | 0.999  |  0.999   |    2.0    |    23.0   |    200     |  STAD  | 200 | random_sampling |  svc  |   anova   |
+|   0.997   | 0.991  |  0.992   |    2.0    |    23.0   |    200     |  STAD  | 100 | random_sampling |  svc  |   anova   |
+|   0.995   | 0.984  |  0.987   |    2.0    |    23.0   |    200     |  STAD  |  50 | random_sampling |  svc  |   anova   |
+|   0.995   | 0.999  |  0.997   |    2.0    |    23.0   |    200     |  STAD  |  26 | random_sampling |  svc  |   anova   |
+|   0.979   | 0.984  |  0.979   |    2.0    |    23.0   |    200     |  STAD  |  10 | random_sampling |  svc  |   anova   |
+|   0.954   | 0.965  |  0.952   |    2.0    |    23.0   |    200     |  STAD  |  6  | random_sampling |  svc  |   anova   |
+|   0.975   | 0.996  |  0.982   |    2.0    |    23.0   |    200     |  STAD  |  0  | random_sampling |  svc  |   anova   |
++-----------+--------+----------+-----------+-----------+------------+--------+-----+-----------------+-------+-----------+
