@@ -82,7 +82,7 @@ def main():
 
         print("Using model", prediction_models[target], "for", target)
         for sampling in config.sampling[:]:
-            for selection in ["elasticnet", "pearson"]:#config.selection_types[-2:-1]: #["linreg", "chi2", "elasticnet", "lasso", "anova", "pearson"]
+            for selection in ["elasticnet", "pearson"][:1]:#config.selection_types[-2:-1]: #["linreg", "chi2", "elasticnet", "lasso", "anova", "pearson"]
                 # pred.runExperiments(data[1:2], files[1:2], target=target, sampling=sampling, selection=selection)
                 
                 for parity in config.modality_parities[:]:

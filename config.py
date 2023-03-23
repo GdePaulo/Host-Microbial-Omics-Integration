@@ -10,7 +10,7 @@ prediction_bounds = {
 }
 
 sampling = ["random_sampling"]#["cv", "random_sampling"]
-random_sampling_iterations = 2
+random_sampling_iterations = 200
 random_sampling_training_portion = 0.8
 
 selection_types = ["linreg", "chi2", "elasticnet", "lasso", "anova", "pearson"]
@@ -58,8 +58,11 @@ all_features, _ = load.getFeatures()
 tcma_gen_features, aak_ge_features = all_features
 tcma_gen_aak_ge_features = aak_ge_features + tcma_gen_features
 tcma_gen_aak_ge_ae_features = list(range(100)) 
-tcma_gen_ae_features = list(range(15)) 
+aak_ge_ae_features = list(range(100)) 
+tcma_gen_ae_features = list(range(50)) 
 tcma_gen_aak_ge_nmf_features = list(range(100)) 
+aak_ge_nmf_features = list(range(100)) 
+tcma_gen_nmf_features = list(range(50)) 
 
 modality_features = {
     "aak_ge": aak_ge_features,
