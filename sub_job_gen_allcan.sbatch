@@ -3,7 +3,7 @@
 #SBATCH --job-name=holo-gen
 #SBATCH --partition=general
 #SBATCH --qos=medium
-#SBATCH --time=14:10:00
+#SBATCH --time=31:10:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=24
 #SBATCH --mem=3500

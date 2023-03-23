@@ -10,7 +10,7 @@ prediction_bounds = {
 }
 
 sampling = ["random_sampling"]#["cv", "random_sampling"]
-random_sampling_iterations = 200
+random_sampling_iterations = 2
 random_sampling_training_portion = 0.8
 
 selection_types = ["linreg", "chi2", "elasticnet", "lasso", "anova", "pearson"]

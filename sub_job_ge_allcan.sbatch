@@ -3,9 +3,9 @@
 #SBATCH --job-name=holo-ge
 #SBATCH --partition=general
 #SBATCH --qos=medium
-#SBATCH --time=06:10:00
+#SBATCH --time=31:10:00
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=16
+#SBATCH --cpus-per-task=32
 #SBATCH --mem=3000
 #SBATCH --gres=gpu
 
