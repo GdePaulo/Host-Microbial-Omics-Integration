@@ -10,10 +10,10 @@ prediction_bounds = {
 }
 
 sampling = ["random_sampling"]#["cv", "random_sampling"]
-random_sampling_iterations = 4
+random_sampling_iterations = 200
 random_sampling_training_portion = 0.8
 
-selection_types = ["linreg", "chi2", "elasticnet", "lasso"]
+selection_types = ["linreg", "chi2", "elasticnet", "lasso", "anova", "pearson"]
 # feature_amounts = [0, 6, 12]
 feature_amounts = [0, 6, 10, 26, 50, 100, 200]
 # feature_amounts = [0, 5, 10, 25, 50, 100, 200]
@@ -46,6 +46,11 @@ modality_file_name_to_name = {
     'tcma_gen_aak_ge_nmf': "GE ∩ GENUS (nmf)",
     'tcma_gen_nmf': "GENUS (nmf)",
     'aak_ge_nmf': "GE (nmf)",
+}
+
+target_to_name = {
+    "stage": "stage",
+    "tumor": "normal vs tumor"
 }
 
 all_features, _ = load.getFeatures()

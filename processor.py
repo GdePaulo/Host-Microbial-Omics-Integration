@@ -9,11 +9,11 @@ import matplotlib.patches as mpatches
 
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
-from sklearn.feature_selection import SelectKBest, chi2
+from sklearn.feature_selection import SelectKBest, chi2, f_classif, r_regression
 
 from sklearn.linear_model import LogisticRegression, LinearRegression, ElasticNet, Lasso
 from sklearn.svm import SVC
-
+from tuner import getTunedModel
 import math
 import numpy as np
 
@@ -41,13 +41,19 @@ def getTSNE(x):
     return tsne_df
 
 # To do: fix chi2 to return list Sorted based on feature importance
-def selectFeatures(x, y, k=10, method="chi2", random_seed=0):
+# https://www.analyticsvidhya.com/blog/2016/12/introduction-to-feature-selection-methods-with-an-example-or-how-to-select-the-right-variables/
+def selectFeatures(x, y, k=10, method="chi2", random_seed=0, scoring="n/a"):
     if k == 0:
         # return x.copy()
         return list(range(len(x.columns)))
 
-    if method == "chi2":
-        selector = SelectKBest(chi2, k=k)
+    if method in ["chi2", "anova", "pearson"]:
+        if method == "chi2":
+            selector = SelectKBest(chi2, k=k)
+        elif method == "anova":
+            selector = SelectKBest(f_classif, k=k)
+        elif method == "pearson":
+            selector = SelectKBest(r_regression, k=k)
         X_kbest = selector.fit(x, y)
         # print("e", X_kbest)
         best_indices = selector.get_support()
@@ -56,12 +62,17 @@ def selectFeatures(x, y, k=10, method="chi2", random_seed=0):
     else:
         if method == "linreg":
             model = LinearRegression()
-        elif method == "elasticnet":
-            model = ElasticNet(random_state=random_seed)
-        elif method == "lasso":
-            model = Lasso(random_state=random_seed)
-        model.fit(x, y)
-
+            model.fit(x, y)
+        else:
+            if method == "elasticnet":
+            # Allow for the random state to be equal to the predictor models in predictor.py
+                model = ElasticNet(random_state=0)
+            elif method == "lasso":
+                model = Lasso(random_state=0)
+            print(f"Tuning selector model")
+            tuned_object = getTunedModel(model, x, y, random_state=random_seed, scoring=scoring)
+            model = tuned_object.best_estimator_
+            
         features_with_coefficients = pd.DataFrame({"feature":x.columns,"coefficients":np.transpose(model.coef_)})
         features_with_coefficients_abs = features_with_coefficients.copy()
         features_with_coefficients_abs["coefficients"] = features_with_coefficients_abs.apply(lambda row: abs(row.coefficients), axis=1)

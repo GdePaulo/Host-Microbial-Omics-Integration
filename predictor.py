@@ -8,6 +8,7 @@ from sklearn.linear_model import LogisticRegression, LinearRegression, ElasticNe
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report, average_precision_score, log_loss
+from tuner import getTunedModel
 import loader as load
 import processor as pr
 import pandas as pd
@@ -79,30 +80,6 @@ def isMaximumSelectableP(feature_row, p):
     else:
         return p == max_p
 
-def getTunedModel(estimator, x_inner, y_inner, random_state=42, scoring="neg_root_mean_squared_error"):
-    model_name = type(estimator).__name__
-    param_grid = config.model_hyperparameter_ranges[model_name]
-
-    inner_cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=random_state)
-
-    # grid_search = GridSearchCV(
-    grid_search = RandomizedSearchCV(
-        param_distributions = param_grid,
-        n_iter = 100,
-        estimator=estimator,
-        # param_grid=param_grid,
-        cv=inner_cv,
-        scoring=scoring, #https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
-        refit=True,
-        return_train_score=True,
-        n_jobs=-1,
-        random_state=random_state)
-
-    grid_search.fit(x_inner, y_inner)
-    
-    # Predict on the test set and call accuracy
-    return grid_search
-
 loaded_features = {}
 def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, preload_features=True, modality_selection_parity=False, hyperp_tuning=False, hyperp_scoring="accuracy"):
     
@@ -131,8 +108,8 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
                 x_train_with_genus_features = x_train[gen]
                 x_train_with_ge_features = x_train[ge]
 
-                best_indices_genus = pr.selectFeatures(x=x_train_with_genus_features, y=y_train, k=p_per_modality, method=selection, random_seed=iteration_seed)
-                best_indices_ge = pr.selectFeatures(x=x_train_with_ge_features, y=y_train, k=p_per_modality, method=selection, random_seed=iteration_seed)
+                best_indices_genus = pr.selectFeatures(x=x_train_with_genus_features, y=y_train, k=p_per_modality, method=selection, random_seed=iteration_seed, scoring=hyperp_scoring)
+                best_indices_ge = pr.selectFeatures(x=x_train_with_ge_features, y=y_train, k=p_per_modality, method=selection, random_seed=iteration_seed, scoring=hyperp_scoring)
 
                 # Do it like this to preserve order
                 best_features_genus = [gen[best_index] for best_index in best_indices_genus]
@@ -147,18 +124,18 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
                 if preload_features:
                     loaded_features[i] = (best_indices_genus_original, best_indices_ge_original)
             elif p==0:
-                best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection, random_seed=iteration_seed)
+                best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection, random_seed=iteration_seed, scoring=hyperp_scoring)
             else:
                 if preload_features:
                     best_indices_genus, best_indices_ge = loaded_features[i]
                     best_indices = best_indices_genus[:p_per_modality] + best_indices_ge[:p_per_modality]
         else:
             if isMaximumSelectableP(x, p) or not preload_features:
-                best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection, random_seed=iteration_seed)
+                best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection, random_seed=iteration_seed, scoring=hyperp_scoring)
                 if preload_features:
                     loaded_features[i] = best_indices
             elif p==0:
-                best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection, random_seed=iteration_seed)
+                best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection, random_seed=iteration_seed, scoring=hyperp_scoring)
             else:
                 if preload_features:
                     best_indices = loaded_features[i][:p]
@@ -224,7 +201,7 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
             
 
         preload_features = True
-        if selection == "chi2":
+        if selection in ["chi2", "anova", "pearson"]:
             # Do not preload because they are not Sorted when using chi2
             preload_features = False
         enforce_modality_parity = modality_selection_parity
@@ -233,7 +210,7 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
             enforce_modality_parity = False
 
         final_reports = [None, None, None]
-        for c in ["COAD", "ESCA", "HNSC", "READ", "STAD"][-1:]:   
+        for c in ["COAD", "ESCA", "HNSC", "READ", "STAD"][:]:   
             if stad_exp and (target!="stage" or c!="STAD"):
                 continue
 
