@@ -10,7 +10,7 @@ import matplotlib.patches as mpatches
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 from sklearn.feature_selection import SelectKBest, chi2, f_classif, r_regression
-
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LogisticRegression, LinearRegression, ElasticNet, Lasso
 from sklearn.svm import SVC
 from tuner import getTunedModel
@@ -69,11 +69,13 @@ def selectFeatures(x, y, k=10, method="chi2", random_seed=0, scoring="n/a"):
                 model = ElasticNet(random_state=0)
             elif method == "lasso":
                 model = Lasso(random_state=0)
+            elif method == "rfreg":
+                model = RandomForestRegressor(random_state=0)
             print(f"Tuning selector model")
             tuned_object = getTunedModel(model, x, y, random_state=random_seed, scoring=scoring)
             model = tuned_object.best_estimator_
-            
-        features_with_coefficients = pd.DataFrame({"feature":x.columns,"coefficients":np.transpose(model.coef_)})
+        coefficients = model.feature_importances_ if method == "rfreg" else model.coef_
+        features_with_coefficients = pd.DataFrame({"feature":x.columns,"coefficients":np.transpose(coefficients)})
         features_with_coefficients_abs = features_with_coefficients.copy()
         features_with_coefficients_abs["coefficients"] = features_with_coefficients_abs.apply(lambda row: abs(row.coefficients), axis=1)
         

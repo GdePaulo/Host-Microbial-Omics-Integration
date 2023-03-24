@@ -1,11 +1,11 @@
 +-----------+--------+----------+-----------+-----------+-----------+-----------+-----------+------------+--------+-----+-----------------+-------+------------+
 | precision | recall | f1-score | support-0 | support-1 | support-2 | support-3 | support-4 | iterations | cancer |  p  |     sampling    | model | selection  |
 +-----------+--------+----------+-----------+-----------+-----------+-----------+-----------+------------+--------+-----+-----------------+-------+------------+
-|    0.11   | 0.127  |  0.109   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |     2      |  STAD  | 200 | random_sampling | rfreg | elasticnet |
-|   0.101   | 0.162  |  0.113   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |     2      |  STAD  | 100 | random_sampling | rfreg | elasticnet |
-|   0.233   | 0.215  |  0.172   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |     2      |  STAD  |  50 | random_sampling | rfreg | elasticnet |
-|   0.147   | 0.187  |  0.151   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |     2      |  STAD  |  26 | random_sampling | rfreg | elasticnet |
-|   0.184   |  0.22  |  0.179   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |     2      |  STAD  |  10 | random_sampling | rfreg | elasticnet |
-|   0.192   | 0.232  |  0.187   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |     2      |  STAD  |  6  | random_sampling | rfreg | elasticnet |
-|   0.131   | 0.185  |  0.139   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |     2      |  STAD  |  0  | random_sampling | rfreg | elasticnet |
+|   0.167   | 0.212  |  0.163   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  | 200 | random_sampling | rfreg | elasticnet |
+|   0.147   | 0.208  |  0.153   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  | 100 | random_sampling | rfreg | elasticnet |
+|   0.158   | 0.208  |  0.159   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  50 | random_sampling | rfreg | elasticnet |
+|   0.148   | 0.201  |  0.153   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  26 | random_sampling | rfreg | elasticnet |
+|   0.151   | 0.201  |   0.16   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  10 | random_sampling | rfreg | elasticnet |
+|   0.155   | 0.205  |  0.164   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  6  | random_sampling | rfreg | elasticnet |
+|   0.162   | 0.208  |  0.158   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  0  | random_sampling | rfreg | elasticnet |
 +-----------+--------+----------+-----------+-----------+-----------+-----------+-----------+------------+--------+-----+-----------------+-------+------------+

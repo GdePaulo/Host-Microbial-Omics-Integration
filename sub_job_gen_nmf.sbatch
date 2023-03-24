@@ -3,7 +3,7 @@
 #SBATCH --job-name=holo-gen-nmf
 #SBATCH --partition=general 
 #SBATCH --qos=short
-#SBATCH --time=4:00:00
+#SBATCH --time=1:30:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=2000

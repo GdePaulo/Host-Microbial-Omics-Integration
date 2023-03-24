@@ -3,10 +3,10 @@
 #SBATCH --job-name=holo-genge
 #SBATCH --partition=general
 #SBATCH --qos=medium
-#SBATCH --time=00:10:00
+#SBATCH --time=10:10:00
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=16
-#SBATCH --mem=4500
+#SBATCH --cpus-per-task=48
+#SBATCH --mem=5000
 #SBATCH --gres=gpu
 
 module use /opt/insy/modulefiles
