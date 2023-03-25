@@ -1,0 +1,32 @@
++-----------+--------+----------+-----------+-----------+-----------+-----------+-----------+------------+--------+-----+-----------------+-------+------------+
+| precision | recall | f1-score | support-0 | support-1 | support-2 | support-3 | support-4 | iterations | cancer |  p  |     sampling    | model | selection  |
++-----------+--------+----------+-----------+-----------+-----------+-----------+-----------+------------+--------+-----+-----------------+-------+------------+
+|   0.296   | 0.342  |  0.302   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  | 200 | random_sampling |  enet | elasticnet |
+|   0.271   | 0.324  |  0.282   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  | 100 | random_sampling |  enet | elasticnet |
+|   0.229   | 0.285  |   0.24   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  |  50 | random_sampling |  enet | elasticnet |
+|   0.199   | 0.255  |  0.209   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  |  26 | random_sampling |  enet | elasticnet |
+|   0.167   | 0.233  |  0.181   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  |  10 | random_sampling |  enet | elasticnet |
+|   0.156   | 0.222  |  0.168   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  |  6  | random_sampling |  enet | elasticnet |
+|    0.31   | 0.362  |  0.318   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  |  0  | random_sampling |  enet | elasticnet |
+|   0.399   | 0.387  |  0.377   |    2.0    |    2.0    |    6.0    |    3.0    |    0.0    |    200     |  ESCA  | 200 | random_sampling |  enet | elasticnet |
+|    0.36   | 0.361  |  0.341   |    2.0    |    2.0    |    6.0    |    3.0    |    0.0    |    200     |  ESCA  | 100 | random_sampling |  enet | elasticnet |
+|   0.334   | 0.341  |  0.319   |    2.0    |    2.0    |    6.0    |    3.0    |    0.0    |    200     |  ESCA  |  50 | random_sampling |  enet | elasticnet |
+|   0.307   | 0.316  |  0.295   |    2.0    |    2.0    |    6.0    |    3.0    |    0.0    |    200     |  ESCA  |  26 | random_sampling |  enet | elasticnet |
+|   0.249   | 0.288  |  0.252   |    2.0    |    2.0    |    6.0    |    3.0    |    0.0    |    200     |  ESCA  |  10 | random_sampling |  enet | elasticnet |
+|    0.23   |  0.28  |  0.238   |    2.0    |    2.0    |    6.0    |    3.0    |    0.0    |    200     |  ESCA  |  6  | random_sampling |  enet | elasticnet |
+|   0.413   | 0.404  |  0.387   |    2.0    |    2.0    |    6.0    |    3.0    |    0.0    |    200     |  ESCA  |  0  | random_sampling |  enet | elasticnet |
+|    0.27   | 0.266  |  0.239   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  | 200 | random_sampling |  enet | elasticnet |
+|   0.243   |  0.24  |  0.211   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  | 100 | random_sampling |  enet | elasticnet |
+|   0.202   |  0.21  |  0.178   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  |  50 | random_sampling |  enet | elasticnet |
+|   0.187   | 0.195  |   0.16   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  |  26 | random_sampling |  enet | elasticnet |
+|   0.159   | 0.191  |   0.13   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  |  10 | random_sampling |  enet | elasticnet |
+|   0.134   | 0.188  |   0.11   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  |  6  | random_sampling |  enet | elasticnet |
+|   0.237   | 0.249  |  0.195   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  |  0  | random_sampling |  enet | elasticnet |
+|   0.273   | 0.266  |  0.254   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  | 200 | random_sampling |  enet | elasticnet |
+|   0.259   | 0.261  |  0.246   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  | 100 | random_sampling |  enet | elasticnet |
+|    0.23   | 0.238  |  0.221   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  50 | random_sampling |  enet | elasticnet |
+|   0.193   |  0.21  |  0.188   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  26 | random_sampling |  enet | elasticnet |
+|   0.165   | 0.199  |  0.167   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  10 | random_sampling |  enet | elasticnet |
+|   0.156   | 0.196  |  0.158   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  6  | random_sampling |  enet | elasticnet |
+|   0.222   | 0.244  |  0.219   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  0  | random_sampling |  enet | elasticnet |
++-----------+--------+----------+-----------+-----------+-----------+-----------+-----------+------------+--------+-----+-----------------+-------+------------+

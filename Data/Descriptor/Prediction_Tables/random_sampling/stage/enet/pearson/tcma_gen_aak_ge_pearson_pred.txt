@@ -1,0 +1,32 @@
++-----------+--------+----------+-----------+-----------+-----------+-----------+-----------+------------+--------+-----+-----------------+-------+-----------+
+| precision | recall | f1-score | support-0 | support-1 | support-2 | support-3 | support-4 | iterations | cancer |  p  |     sampling    | model | selection |
++-----------+--------+----------+-----------+-----------+-----------+-----------+-----------+------------+--------+-----+-----------------+-------+-----------+
+|   0.278   | 0.337  |  0.286   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  | 200 | random_sampling |  enet |  pearson  |
+|   0.286   | 0.339  |  0.291   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  | 100 | random_sampling |  enet |  pearson  |
+|   0.292   | 0.347  |  0.297   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  |  50 | random_sampling |  enet |  pearson  |
+|   0.306   | 0.355  |  0.308   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  |  26 | random_sampling |  enet |  pearson  |
+|   0.284   | 0.339  |  0.288   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  |  10 | random_sampling |  enet |  pearson  |
+|   0.284   | 0.336  |  0.286   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  |  6  | random_sampling |  enet |  pearson  |
+|    0.31   | 0.362  |  0.318   |    1.0    |    3.0    |    3.0    |    2.0    |    1.0    |    200     |  COAD  |  0  | random_sampling |  enet |  pearson  |
+|   0.455   | 0.437  |  0.421   |    2.0    |    2.0    |    6.0    |    3.0    |           |    200     |  ESCA  | 200 | random_sampling |  enet |  pearson  |
+|   0.463   | 0.438  |  0.424   |    2.0    |    2.0    |    6.0    |    3.0    |    0.0    |    200     |  ESCA  | 100 | random_sampling |  enet |  pearson  |
+|   0.453   | 0.428  |  0.412   |    2.0    |    2.0    |    6.0    |    3.0    |           |    200     |  ESCA  |  50 | random_sampling |  enet |  pearson  |
+|   0.413   | 0.405  |  0.385   |    2.0    |    2.0    |    6.0    |    3.0    |           |    200     |  ESCA  |  26 | random_sampling |  enet |  pearson  |
+|   0.377   | 0.371  |  0.351   |    2.0    |    2.0    |    6.0    |    3.0    |           |    200     |  ESCA  |  10 | random_sampling |  enet |  pearson  |
+|   0.354   | 0.358  |  0.334   |    2.0    |    2.0    |    6.0    |    3.0    |           |    200     |  ESCA  |  6  | random_sampling |  enet |  pearson  |
+|   0.413   | 0.404  |  0.387   |    2.0    |    2.0    |    6.0    |    3.0    |    0.0    |    200     |  ESCA  |  0  | random_sampling |  enet |  pearson  |
+|    0.18   | 0.224  |  0.149   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  | 200 | random_sampling |  enet |  pearson  |
+|   0.177   | 0.219  |  0.147   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  | 100 | random_sampling |  enet |  pearson  |
+|   0.179   | 0.215  |   0.15   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  |  50 | random_sampling |  enet |  pearson  |
+|   0.196   | 0.225  |  0.168   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  |  26 | random_sampling |  enet |  pearson  |
+|   0.173   |  0.2   |  0.143   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  |  10 | random_sampling |  enet |  pearson  |
+|   0.164   |  0.19  |  0.133   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  |  6  | random_sampling |  enet |  pearson  |
+|   0.237   | 0.249  |  0.195   |    1.0    |    2.0    |    5.0    |    5.0    |    14.0   |    200     |  HNSC  |  0  | random_sampling |  enet |  pearson  |
+|   0.244   |  0.26  |  0.238   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  | 200 | random_sampling |  enet |  pearson  |
+|   0.299   |  0.29  |  0.276   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  | 100 | random_sampling |  enet |  pearson  |
+|   0.309   | 0.298  |  0.285   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  50 | random_sampling |  enet |  pearson  |
+|   0.272   | 0.271  |  0.256   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  26 | random_sampling |  enet |  pearson  |
+|   0.242   | 0.249  |   0.23   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  10 | random_sampling |  enet |  pearson  |
+|   0.244   | 0.249  |  0.231   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  6  | random_sampling |  enet |  pearson  |
+|   0.222   | 0.244  |  0.219   |    2.0    |    4.0    |    7.0    |    6.0    |    3.0    |    200     |  STAD  |  0  | random_sampling |  enet |  pearson  |
++-----------+--------+----------+-----------+-----------+-----------+-----------+-----------+------------+--------+-----+-----------------+-------+-----------+

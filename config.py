@@ -136,3 +136,9 @@ colorblind_colors = ['#377eb8',
                         '#4daf4a',
                      
                       '#dede00']
+
+def getLegendPosition(target, metric):
+    if target=="stage" and metric != "rmse":
+        return "upper right"
+    else:
+        return "lower right"
