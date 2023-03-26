@@ -39,12 +39,12 @@ visualization_packages = {
 visualization_package_to_experiment_name = {
     "super_base&parity": "Modality parity enforcement",
     "base&parity": "Modality parity enforcement",
-    "super_base&ae": "Autoencoder integration",
+    "super_base&ae": "AE integration",
     "super_base&nmf": "NMF integration",
     "super_base": "Predictive performance",
     "base": "Predictive performance",
     "super_nmf": "NMF integration per modality",
-    "super_ae": "Autoencoder integration per modality",
+    "super_ae": "AE integration per modality",
 }
 
 modality_file_name_to_name = {
@@ -58,6 +58,7 @@ modality_file_name_to_name = {
     'tcma_gen_aak_ge_nmf': "GE ∩ GENUS (nmf)",
     'tcma_gen_nmf': "GENUS (nmf)",
     'aak_ge_nmf': "GE (nmf)",
+    'baseline': "Baseline",
 }
 
 target_to_name = {
@@ -153,3 +154,14 @@ def getLegendPosition(target, metric):
         return "upper right"
     else:
         return "lower right"
+
+stad_precision = 113 / (113 + 9)
+baselines = {
+    "stage": {
+        "STAD": ((4*9 + 19 + 0 + 27 + 4*16)/107)**0.5
+    },
+    # 2 * (p * r) / (p + r)
+    "tumor": {
+        "STAD": 2 * (stad_precision * 1) / (stad_precision + 1)
+    }
+}
