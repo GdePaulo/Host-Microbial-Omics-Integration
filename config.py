@@ -36,6 +36,17 @@ visualization_packages = {
     "super_base&super_nmf": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge_nmf", "aak_ge_nmf", "tcma_gen_nmf"],
 }
 
+visualization_package_to_experiment_name = {
+    "super_base&parity": "Modality parity enforcement",
+    "base&parity": "Modality parity enforcement",
+    "super_base&ae": "Autoencoder integration",
+    "super_base&nmf": "NMF integration",
+    "super_base": "Predictive performance",
+    "base": "Predictive performance",
+    "super_nmf": "NMF integration per modality",
+    "super_ae": "Autoencoder integration per modality",
+}
+
 modality_file_name_to_name = {
     'aak_ge': "GE",
     'tcma_gen': "GENUS",
