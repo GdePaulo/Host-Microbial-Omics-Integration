@@ -47,6 +47,17 @@ visualization_package_to_experiment_name = {
     "super_ae": "AE integration per modality",
 }
 
+visualization_package_to_experiment_tag = {
+    "super_base&parity": "with parity",
+    "base&parity": "with parity",
+    "super_base&ae": "with AE",
+    "super_base&nmf": "with NMF",
+    "super_base": "",
+    "base": "",
+    "super_nmf": "with NMF",
+    "super_ae": "with AE",
+}
+
 modality_file_name_to_name = {
     'aak_ge': "GE",
     'tcma_gen': "GENUS",
