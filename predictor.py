@@ -61,11 +61,13 @@ def generatePredictionsDataFrame(y_tests, y_predicteds, y_predicteds_raw):
     predictions["iteration"] = all_sampling_iterations
     return predictions
     
-def generateSelectedFeaturesDataFrame(selected_features):
+def generateSelectedFeaturesDataFrame(selected_features, coefficients):
     features = {}
     all_selected_features = [y for x in selected_features for y in x]
+    all_selected_features_coefficients = [y for x in coefficients for y in x]
     all_sampling_iterations = [i for i, x in enumerate(selected_features) for y in range(len(x))]
     features["features"] = all_selected_features
+    features["coefficient"] = all_selected_features_coefficients
     features["iteration"] = all_sampling_iterations
     return features
 
@@ -81,15 +83,19 @@ def isMaximumSelectableP(feature_row, p):
         return p == max_p
 
 loaded_features = {}
+loaded_features_coefficients = {}
 def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, preload_features=True, modality_selection_parity=False, hyperp_tuning=False, hyperp_scoring="accuracy"):
     
     y_tests = []    
     y_predicteds = []
     selected_features = []
+    selected_features_coefficients = []
     
     global loaded_features
+    global loaded_features_coefficients
     if preload_features and p==max(config.feature_amounts):
         loaded_features = {}
+        loaded_features_coefficients = {}
     
     if modality_selection_parity:
         all_features, _ = load.getFeatures()
@@ -108,8 +114,8 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
                 x_train_with_genus_features = x_train[gen]
                 x_train_with_ge_features = x_train[ge]
 
-                best_indices_genus = pr.selectFeatures(x=x_train_with_genus_features, y=y_train, k=p_per_modality, method=selection, random_seed=iteration_seed, scoring=hyperp_scoring)
-                best_indices_ge = pr.selectFeatures(x=x_train_with_ge_features, y=y_train, k=p_per_modality, method=selection, random_seed=iteration_seed, scoring=hyperp_scoring)
+                best_indices_genus, coefficients_genus = pr.selectFeatures(x=x_train_with_genus_features, y=y_train, k=p_per_modality, method=selection, random_seed=iteration_seed, scoring=hyperp_scoring)
+                best_indices_ge, coefficients_ge = pr.selectFeatures(x=x_train_with_ge_features, y=y_train, k=p_per_modality, method=selection, random_seed=iteration_seed, scoring=hyperp_scoring)
 
                 # Do it like this to preserve order
                 best_features_genus = [gen[best_index] for best_index in best_indices_genus]
@@ -120,25 +126,30 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
                 best_indices_ge_original = [x_train.columns.get_loc(f) for f in best_features_ge]
 
                 best_indices = best_indices_genus_original + best_indices_ge_original
+                coefficients = coefficients_genus | coefficients_ge
                 
                 if preload_features:
                     loaded_features[i] = (best_indices_genus_original, best_indices_ge_original)
+                    loaded_features_coefficients[i] = coefficients
             elif p==0:
-                best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection, random_seed=iteration_seed, scoring=hyperp_scoring)
+                best_indices, coefficients = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection, random_seed=iteration_seed, scoring=hyperp_scoring)
             else:
                 if preload_features:
                     best_indices_genus, best_indices_ge = loaded_features[i]
                     best_indices = best_indices_genus[:p_per_modality] + best_indices_ge[:p_per_modality]
+                    coefficients = loaded_features_coefficients[i]
         else:
             if isMaximumSelectableP(x, p) or not preload_features:
-                best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection, random_seed=iteration_seed, scoring=hyperp_scoring)
+                best_indices, coefficients = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection, random_seed=iteration_seed, scoring=hyperp_scoring)
                 if preload_features:
                     loaded_features[i] = best_indices
+                    loaded_features_coefficients[i] = coefficients
             elif p==0:
-                best_indices = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection, random_seed=iteration_seed, scoring=hyperp_scoring)
+                best_indices, coefficients = pr.selectFeatures(x=x_train, y=y_train, k=p, method=selection, random_seed=iteration_seed, scoring=hyperp_scoring)
             else:
                 if preload_features:
                     best_indices = loaded_features[i][:p]
+                    coefficients = loaded_features_coefficients[i]
                 
 
         x_train_selected = x_train.iloc[:, best_indices].copy()  
@@ -166,9 +177,11 @@ def runRandomSampling(x, y, model, categorical=True, selection="chi2", p=0, prel
         
         if p != 0:
             selected_feature_names = [x.columns[best_index] for best_index in best_indices]
+            selected_feature_coefficients = [coefficients.get(feature_name, -1) for feature_name in selected_feature_names]
             selected_features.append(selected_feature_names)
+            selected_features_coefficients.append(selected_feature_coefficients)
 
-    return y_tests, y_predicteds, selected_features 
+    return y_tests, y_predicteds, selected_features, selected_features_coefficients
 
 def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampling="cv", selection="chi2", modality_selection_parity=False, stad_exp=False, selected_model="no"):
     categorical = True
@@ -240,7 +253,7 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
                 
                 # print(f"Running for {files[i]} {c} {p}")
                 if sampling=="random_sampling":
-                    y_tests, y_predicteds, selected_features = runRandomSampling(x, y, model=model, selection=selection, p=p, preload_features=preload_features, modality_selection_parity=enforce_modality_parity, hyperp_tuning=True, hyperp_scoring=scoring)
+                    y_tests, y_predicteds, selected_features, selected_features_coefficients = runRandomSampling(x, y, model=model, selection=selection, p=p, preload_features=preload_features, modality_selection_parity=enforce_modality_parity, hyperp_tuning=True, hyperp_scoring=scoring)
                 
                 if categorical:
                     y_predicteds_clipped_and_rounded = [convertPredictionToCategorical(y_predicted, y) for y_predicted in y_predicteds]
@@ -250,7 +263,7 @@ def runExperiments(data, files, target="tumor", ps=config.feature_amounts, sampl
                 print("Generating predictions dataframe")
                 cur_pred_output_report = generatePredictionsDataFrame(y_tests, y_predicteds_clipped_and_rounded, y_predicteds)
                 print("Generating selected features dataframe")
-                cur_pred_features_report = generateSelectedFeaturesDataFrame(selected_features)
+                cur_pred_features_report = generateSelectedFeaturesDataFrame(selected_features, selected_features_coefficients)
                 
                 metadata = {
                     "cancer" : c,

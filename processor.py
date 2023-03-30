@@ -43,9 +43,10 @@ def getTSNE(x):
 # To do: fix chi2 to return list Sorted based on feature importance
 # https://www.analyticsvidhya.com/blog/2016/12/introduction-to-feature-selection-methods-with-an-example-or-how-to-select-the-right-variables/
 def selectFeatures(x, y, k=10, method="chi2", random_seed=0, scoring="n/a"):
+    feature_coefficients = {}
     if k == 0:
         # return x.copy()
-        return list(range(len(x.columns)))
+        return list(range(len(x.columns))), feature_coefficients
 
     if method in ["chi2", "anova", "pearson"]:
         if method == "chi2":
@@ -81,13 +82,14 @@ def selectFeatures(x, y, k=10, method="chi2", random_seed=0, scoring="n/a"):
         
         sorted_features = features_with_coefficients_abs.sort_values("coefficients", ascending=False)
         top_features = sorted_features.head(k)["feature"].values
+        feature_coefficients = sorted_features.set_index("feature").T.to_dict("records")[0]
         best_indices = [x.columns.get_loc(c) for c in top_features]
 
     # chi2_scores = pd.DataFrame(list(zip(x.columns, selector.scores_, selector.pvalues_)), columns=['ftr', 'score', 'pval'])
     # chi2_scores
 
     # kbest = np.asarray(x.columns)[selector.get_support()]
-    return best_indices
+    return best_indices, feature_coefficients
     # return x.iloc[:, best_indices].copy()
 
 def plotScatter(X, Y, sub_titles=[], filename="", diagnostic="tumor", cols=3, main_title="PLOT"):
