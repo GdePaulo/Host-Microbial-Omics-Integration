@@ -5,7 +5,7 @@
 #SBATCH --qos=medium
 #SBATCH --time=17:10:00
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=64
+#SBATCH --cpus-per-task=48
 #SBATCH --mem=6500
 #SBATCH --gres=gpu
 

@@ -160,6 +160,11 @@ colorblind_colors = ['#377eb8',
                      
                       '#dede00']
 
+override_colors = {
+    "tcma_gen_aak_ge_ae": '#984ea3',
+    "tcma_gen_aak_ge_nmf": '#984ea3'
+}
+
 def getLegendPosition(target, metric):
     if target=="stage" and metric != "rmse":
         return "upper right"
