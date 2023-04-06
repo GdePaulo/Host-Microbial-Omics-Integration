@@ -25,15 +25,19 @@ visualization_packages = {
     "all": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge(parity)", "tcma_gen_aak_ge_ae"],
     "base": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge'],
     "base&parity": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge(parity)"],
+    "parity_overlap": ['tcma_gen_aak_ge', "tcma_gen_aak_ge(parity)"],
     "base&ae": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge_ae"],
     "super_base": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge'],
     "super_base&parity": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge(parity)"],
+    "super_parity_overlap": ['tcma_gen_aak_ge', "tcma_gen_aak_ge(parity)"],
     "super_base&ae": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge_ae"],
     "super_ae": ['aak_ge_ae', 'tcma_gen_ae', "tcma_gen_aak_ge_ae"],
     "super_base&ae&nmf": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge_ae", "tcma_gen_aak_ge_nmf"],
     "super_base&nmf": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge_nmf"],
     "super_nmf": [ "aak_ge_nmf", "tcma_gen_nmf", "tcma_gen_aak_ge_nmf"],
     "super_base&super_nmf": ['aak_ge', 'tcma_gen', 'tcma_gen_aak_ge', "tcma_gen_aak_ge_nmf", "aak_ge_nmf", "tcma_gen_nmf"],
+    "super_nmf_overlap": [ "tcma_gen_aak_ge", "tcma_gen_aak_ge_nmf"],
+    "super_ae_overlap": [ "tcma_gen_aak_ge", "tcma_gen_aak_ge_ae"],
 }
 
 visualization_package_to_experiment_name = {
@@ -49,13 +53,17 @@ visualization_package_to_experiment_name = {
 
 visualization_package_to_experiment_tag = {
     "super_base&parity": "with parity",
+    "super_parity_overlap": "with parity",
+    "parity_overlap": "with parity",
     "base&parity": "with parity",
     "super_base&ae": "with AE",
     "super_base&nmf": "with NMF",
     "super_base": "",
     "base": "",
     "super_nmf": "with NMF",
+    "super_nmf_overlap": "with NMF",
     "super_ae": "with AE",
+    "super_ae_overlap": "with AE",
 }
 
 modality_file_name_to_name = {
@@ -162,7 +170,9 @@ colorblind_colors = ['#377eb8',
 
 override_colors = {
     "tcma_gen_aak_ge_ae": '#984ea3',
-    "tcma_gen_aak_ge_nmf": '#984ea3'
+    "tcma_gen_aak_ge_nmf": '#984ea3',
+    "tcma_gen_aak_ge(parity)": '#984ea3',
+    "tcma_gen_aak_ge": '#e41a1c'
 }
 
 def getLegendPosition(target, metric):
@@ -174,10 +184,20 @@ def getLegendPosition(target, metric):
 stad_precision = 113 / (113 + 9)
 baselines = {
     "stage": {
-        "STAD": ((4*9 + 19 + 0 + 27 + 4*16)/107)**0.5
+        # "STAD": ((4*9 + 19 + 0 + 27 + 4*16)/107)**0.5
+        'COAD': 1.1153482912409494,
+        'ESCA': 0.9743056974541262,
+        'HNSC': 1.21137127293087,
+        'READ': 0.4714045207910317,
+        'STAD': 1.1498745787519555
     },
     # 2 * (p * r) / (p + r)
     "tumor": {
-        "STAD": 2 * (stad_precision * 1) / (stad_precision + 1)
+        # "STAD": 2 * (stad_precision * 1) / (stad_precision + 1)
+        'COAD': 0.967741935483871,
+        'ESCA': 0.944,
+        'HNSC': 0.9777777777777777,
+        'READ': 1.0,
+        'STAD': 0.9617021276595745
     }
 }
