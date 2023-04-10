@@ -1,0 +1,10 @@
+STAD|tumor|SVC|anova for aak_ge vs tcma_gen_aak_ge: MannwhitneyuResult(statistic=21330.5, pvalue=0.025283401104326256)
+STAD|tumor|SVC|anova for tcma_gen_aak_ge vs tcma_gen: MannwhitneyuResult(statistic=39487.0, pvalue=2.386852513218465e-69)
+STAD|tumor|SVC|anova for aak_ge vs tcma_gen: MannwhitneyuResult(statistic=39870.5, pvalue=1.4191139350839785e-73)
+STAD|stage|enet|elasticnet for aak_ge vs tcma_gen_aak_ge: MannwhitneyuResult(statistic=21776.0, pvalue=0.12460960342698235)
+STAD|stage|enet|elasticnet for tcma_gen_aak_ge vs tcma_gen: MannwhitneyuResult(statistic=2545.0, pvalue=1.690065544653778e-51)
+STAD|stage|enet|elasticnet for aak_ge vs tcma_gen: MannwhitneyuResult(statistic=3743.0, pvalue=6.59693896379775e-45)
+STAD|stage|enet|pearson for aak_ge vs tcma_gen_aak_ge: MannwhitneyuResult(statistic=21776.0, pvalue=0.12460960342698235)
+STAD|stage|enet|pearson for tcma_gen_aak_ge vs tcma_gen: MannwhitneyuResult(statistic=2545.0, pvalue=1.690065544653778e-51)
+STAD|stage|enet|pearson for aak_ge vs tcma_gen: MannwhitneyuResult(statistic=3743.0, pvalue=6.59693896379775e-45)
+

@@ -1,0 +1,7 @@
+STAD|stage|enet|elasticnet for tcma_gen_aak_ge_nmf vs tcma_gen_aak_ge: MannwhitneyuResult(statistic=18915.0, pvalue=0.3482275843365198)
+STAD|stage|enet|elasticnet for tcma_gen_aak_ge_nmf vs tcma_gen_nmf: MannwhitneyuResult(statistic=805.0, pvalue=6.719970442231205e-62)
+STAD|stage|enet|elasticnet for tcma_gen_aak_ge_nmf vs aak_ge_nmf: MannwhitneyuResult(statistic=24456.0, pvalue=0.0001163166721532948)
+STAD|stage|enet|pearson for tcma_gen_aak_ge_nmf vs tcma_gen_aak_ge: MannwhitneyuResult(statistic=18915.0, pvalue=0.3482275843365198)
+STAD|stage|enet|pearson for tcma_gen_aak_ge_nmf vs tcma_gen_nmf: MannwhitneyuResult(statistic=805.0, pvalue=6.719970442231205e-62)
+STAD|stage|enet|pearson for tcma_gen_aak_ge_nmf vs aak_ge_nmf: MannwhitneyuResult(statistic=24456.0, pvalue=0.0001163166721532948)
+
